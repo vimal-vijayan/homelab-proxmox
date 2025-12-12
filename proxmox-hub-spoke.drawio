@@ -1,0 +1,60 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.15 Chrome/134.0.6998.205 Electron/35.2.1 Safari/537.36" version="26.2.15">
+  <diagram name="Proxmox Hub and Spoke Architecture" id="0">
+    <mxGraphModel dx="2086" dy="875" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="-XMkPOxZAB0o3Bqyq9Wa-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="580" y="100" width="860" height="690" as="geometry" />
+        </mxCell>
+        <mxCell id="router" value="Home Router&#xa;(Internet)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry y="390" width="200" height="60" as_="geometry" as="geometry" />
+        </mxCell>
+        <mxCell id="-XMkPOxZAB0o3Bqyq9Wa-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="proxmox" target="router">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="proxmox" value="Proxmox Host&#xa;vmbr0 (WAN)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="290" y="390" width="200" height="60" as_="geometry" as="geometry" />
+        </mxCell>
+        <mxCell id="-XMkPOxZAB0o3Bqyq9Wa-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="hub">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hub" value="Hub Network&lt;br&gt;vmbr1&lt;br&gt;10.50.0.0/24&lt;br&gt;pfSense (Hub Firewall) / DNS / SIEM / Jump" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="640" y="370" width="260" height="100" as_="geometry" as="geometry" />
+        </mxCell>
+        <mxCell id="k8s" value="Kubernetes Spoke&#xa;vmbr2&#xa;10.50.10.0/24&#xa;k3s Cluster" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="1080" y="540" width="260" height="100" as_="geometry" as="geometry" />
+        </mxCell>
+        <mxCell id="lab" value="Lab Spoke&#xa;vmbr3&#xa;10.50.20.0/24&#xa;Kali / Targets" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="1080" y="370" width="260" height="100" as_="geometry" as="geometry" />
+        </mxCell>
+        <mxCell id="tools" value="Tools Spoke&#xa;vmbr4&#xa;10.50.30.0/24&#xa;Terraform / CI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="1080" y="220" width="260" height="100" as_="geometry" as="geometry" />
+        </mxCell>
+        <mxCell id="-XMkPOxZAB0o3Bqyq9Wa-4" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="hub" target="lab">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="850" y="550" as="sourcePoint" />
+            <mxPoint x="900" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-XMkPOxZAB0o3Bqyq9Wa-5" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" target="k8s">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="900" y="439" as="sourcePoint" />
+            <mxPoint x="1070" y="439" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-XMkPOxZAB0o3Bqyq9Wa-6" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=-0.023;entryY=0.53;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="tools">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="900" y="399" as="sourcePoint" />
+            <mxPoint x="1040" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-XMkPOxZAB0o3Bqyq9Wa-8" value="Initial Draft : 12/12/2025" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="70" width="150" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
