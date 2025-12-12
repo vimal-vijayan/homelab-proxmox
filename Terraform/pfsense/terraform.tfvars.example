@@ -1,0 +1,10 @@
+# Example overrides for the pfsense VM
+name        = "pfsense"
+vmid        = 101
+node        = "pve"
+cores       = 2
+memory      = 4096
+disk_size   = "20G"
+storage     = "local-lvm"
+iso         = "local:iso/netgate-installer-v1.1.1-RELEASE-amd64.iso"
+bridge      = "vmbr0"

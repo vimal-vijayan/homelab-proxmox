@@ -1,12 +1,15 @@
 terraform {
   required_providers {
     proxmox = {
-      source = "Telmate/proxmox"
+      source  = "Telmate/proxmox"
       version = "3.0.2-rc06"
     }
   }
 }
 
 provider "proxmox" {
-  # Configuration options
+  pm_api_url      = "https://192.168.178.44:8006/api2/json"
+  pm_tls_insecure = true # By default Proxmox Virtual Environment uses self-signed certificates.
+  pm_user         = "vimal@pve"
+  pm_password     = "<YOUR_PASSWORD_HERE>"
 }

@@ -1,0 +1,31 @@
+# Local .gitignore for homelab-proxmox
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform.tfvars.local
+
+# Terragrunt
+.terragrunt-cache/
+
+# Terraform generated plan files
+*.tfplan
+
+# CLI config
+.terraformrc
+terraform.rc
+
+# OS files
+.DS_Store
+
+# IDEs
+.vscode/
+/.idea/
+terraform/pfsense/.terraform.lock.hcl
