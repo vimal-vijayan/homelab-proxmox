@@ -2,7 +2,7 @@ resource "proxmox_vm_qemu" "pfsense" {
   name        = var.name
   vmid        = var.vmid
   target_node = var.node
-  memory      = var.memory
+  memory      = 8192
 
   cpu {
     cores = "1"
@@ -10,7 +10,7 @@ resource "proxmox_vm_qemu" "pfsense" {
 
   lifecycle {
     ignore_changes = [
-      startup_shutdown, tags
+      startup_shutdown
     ]
   }
 
