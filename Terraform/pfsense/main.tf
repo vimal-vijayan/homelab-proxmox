@@ -8,6 +8,12 @@ resource "proxmox_vm_qemu" "pfsense" {
     cores = "1"
   }
 
+  lifecycle {
+    ignore_changes = [
+      startup_shutdown, tags
+    ]
+  }
+
   # Attach the uploaded ISO as the CD-ROM (format: "<storage>:iso/<filename>")
   disks {
     scsi {
@@ -50,7 +56,13 @@ resource "proxmox_vm_qemu" "pfsense_web" {
   name        = "pfsense-web"
   vmid        = 102
   target_node = var.node
-  memory      = 2048
+  memory      = 6144
+
+  lifecycle {
+    ignore_changes = [
+      startup_shutdown, tags
+    ]
+  }
 
   cpu {
     cores = "1"
@@ -66,7 +78,7 @@ resource "proxmox_vm_qemu" "pfsense_web" {
       }
       scsi1 {
         disk {
-          size    = "10G"
+          size    = "20G"
           storage = "nvme"
         }
       }
