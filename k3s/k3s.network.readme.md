@@ -93,3 +93,5 @@ curl -sfL https://get.k3s.io | K3S_URL="https://10.50.10.1:6443" K3S_TOKEN="THE_
   --flannel-backend none \
   --node-ip <worker-ip-on-10.50.10.0/24>
 ```
+
+# Documentation: https://docs.cilium.io/en/stable/installation/k3s/
