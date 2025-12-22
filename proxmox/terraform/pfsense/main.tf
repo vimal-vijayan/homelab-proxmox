@@ -49,5 +49,4 @@ resource "proxmox_vm_qemu" "pfsense" {
     model  = "virtio"
     bridge = "vmbr2"
   }
-
 }
