@@ -33,3 +33,14 @@ k config set-cluster default --server=https://192.168.178.53:6443
 k get nodes -o wide
 ```
 
+k3s comes up with traefik as the default ingress controller. You can verify that the traefik pods are running by executing:
+```bash
+k get pods -n kube-system
+```
+
+if you want to disable traefik during the server setup, you can add the `--disable traefik` flag to the server installation command. or update the config.yaml file located at `/etc/rancher/k3s/config.yaml` with the following content:
+```yaml
+disable:
+  - traefik
+```
+
