@@ -2,11 +2,15 @@
 
 ## K3S Server quick setup
 
-```₹bash
+```bash
 curl -sfL https://get.k3s.io | sh -s - server \
   --node-ip=<serverip>\
   --advertise-address=<serverip> \
   --tls-san=<serverip-for-external-access> 
+
+example : 
+
+curl -sfL https://get.k3s.io | sh -s - server --node-ip=10.50.10.10 --advertise-address=10.50.10.10 --tls-san=192.168.178.53 --flannel-backend=none --disable-network-policy --disable=traefik --disable=servicelb --tls-san=10.50.10.10
 ```
 
 The token for agent nodes to join the cluster can be found at `/var/lib/rancher/k3s/server/node-token` on the server node.
