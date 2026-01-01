@@ -77,7 +77,7 @@ rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
 
 Install Cilium by running:
 ```bash
-cilium install --version 1.18.5 --set=ipam.operator.clusterPoolIPv4PodCIDRList="10.42.0.0/16"
+cilium install --version 1.18.5 --set=ipam.operator.clusterPoolIPv4PodCIDRList="10.42.0.0/16" --set kubeProxyReplacement=true
 ```
 
 Validate the Installation
