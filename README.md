@@ -43,7 +43,7 @@ Infrastructure as Code (optional):
 1. [configure vms in Proxmox with Ubuntu server 22.04 LTS.](proxmox/docs/vm.setup.readme.md)
 2. #TODO: Configure pfSense for VLANs, DHCP, and routing as per the network design.
 3. [Setup k3s cluster and Cni plugin (Cilium)](k3s/docs/k3s.setup.readme.md). 
-4. [Setup MetalLB in Layer 2 mode for load balancing.](metalLB/readme.md)
+4. [Setup MetalLB in Layer 2 mode for load balancing.](metalLB/README.md)
 
 
 ## Security & SIEM Plan
