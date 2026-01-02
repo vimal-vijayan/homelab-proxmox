@@ -1,5 +1,9 @@
-Added 4 Networks (Vmbr1-Vmbr4)
-![alt text](image.png)
+
+## 🗺 Lab Network Design (Proxmox)
+
+![Proxmox Lab Network Design](ProxomoxNetworkRoute.drawio.png)
+
+Reference source: see `ProxomoxNetworkRoute.drawio` in this folder. Export the diagram to `ProxomoxNetworkRoute.png` to update the embedded image.
 
 Perfect — your **bridge layout is correct**, and now we’ll lock in a **clean, enterprise-style IP plan** that matches exactly what you’ve built in Proxmox.
 
@@ -93,8 +97,7 @@ This is the table you can **save as project documentation**.
 📌 **Important (K8s internal ranges – do NOT overlap):**
 
 ```
-Pod CIDR:     10.244.0.0/16
-Service CIDR: 10.96.0.0/12
+Pod CIDR:     10.42.0.0/16
 ```
 
 ---
@@ -132,27 +135,6 @@ Service CIDR: 10.96.0.0/12
 * ✔ SIEM-friendly (all traffic through pfSense)
 
 ---
+## 📸 Proxmox network implementation
 
-## 5️⃣ Sanity Check vs Your Screenshot
-
-From your screenshot:
-
-* vmbr0 → **correct**
-* vmbr1–vmbr4 → **correct**
-* No IPs on bridges → **correct**
-* Autostart enabled → **correct**
-
-You’re doing this **exactly right** 👍
-
----
-
-## Next step (natural order)
-
-👉 **Next we MUST do:**
-**Attach pfSense VM NICs to these bridges and assign interfaces**
-
-Say:
-
-> **“Let’s configure pfSense interfaces”**
-
-I’ll guide you **NIC by NIC**, zero guesswork.
+![alt text](image.png)
