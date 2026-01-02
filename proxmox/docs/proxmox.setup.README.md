@@ -1,7 +1,7 @@
 
 ## 🗺 Lab Network Design (Proxmox)
 
-![Proxmox Lab Network Design](ProxomoxNetworkRoute.drawio.png)
+![Proxmox Lab Network Design](./img/ProxomoxNetworkRoute.drawio.png)
 
 Reference source: see `ProxomoxNetworkRoute.drawio` in this folder. Export the diagram to `ProxomoxNetworkRoute.png` to update the embedded image.
 
@@ -137,4 +137,4 @@ Pod CIDR:     10.42.0.0/16
 ---
 ## 📸 Proxmox network implementation
 
-![alt text](image.png)
+![alt text](./img/network.implementation.png "Proxmox Network Implementation")
