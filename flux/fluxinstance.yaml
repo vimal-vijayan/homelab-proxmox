@@ -6,7 +6,7 @@ metadata:
 type: Opaque
 stringData:
   username: "git-username"
-  password: "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"
+  password: "<YOUR_GIT_PERSONAL_ACCESS_TOKEN>"
 ---
 apiVersion: fluxcd.controlplane.io/v1
 kind: FluxInstance

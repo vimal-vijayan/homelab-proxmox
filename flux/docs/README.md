@@ -13,7 +13,7 @@ helm install flux-operator oci://ghcr.io/controlplaneio-fluxcd/charts/flux-opera
 if the git repository is private, create a pull secret for authentication:
 
 ```bash
-export GITHUB_TOKEN=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
+export GITHUB_TOKEN=<YOUR_GIT_PERSONAL_ACCESS_TOKEN>
 
 flux create secret git flux-system \
   --url=https://github.com/vimal-vijayan/homelab-proxmox.git \
