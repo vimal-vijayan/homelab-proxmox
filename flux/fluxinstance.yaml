@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: git-token-auth
+  namespace: flux-system
+type: Opaque
+stringData:
+  username: "git-username"
+  password: "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"
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: FluxInstance
+metadata:
+  name: flux
+  namespace: flux-system
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: "1h"
+    fluxcd.controlplane.io/reconcileTimeout: "5m"
+spec:
+  distribution:
+    version: "2.7.x"
+    registry: "ghcr.io/fluxcd"
+    artifact: "oci://ghcr.io/controlplaneio-fluxcd/flux-operator-manifests"
+  components:
+    - source-controller
+    - kustomize-controller
+    - helm-controller
+    - notification-controller
+    - image-reflector-controller
+    - image-automation-controller      
+  sync:
+    kind: GitRepository
+    url: "https://github.com/vimal-vijayan/homelab-proxmox.git"
+    ref: "refs/heads/main"
+    path: "k3s"
+    pullSecret: "git-token-auth"
