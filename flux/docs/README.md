@@ -68,3 +68,12 @@ spec:
     path: "clusters/my-cluster"
     pullSecret: "flux-system"
 ```
+## Check the flux instance status and respository sync status
+
+```bash
+kubectl get fluxinstances -n flux-system
+kubectl describe fluxinstance flux -n flux-system | tail -n 40
+
+kubectl get gitrepositories -n flux-system
+kubectl describe gitrepository flux -n flux-system | tail -n 40
+```
