@@ -1,7 +1,3 @@
-# kubectl -n flux-system create secret generic git-token-auth \
-#   --from-literal=username=git-username \
-#   --from-literal=password='<YOUR_GITHUB_PAT>'
----
 apiVersion: fluxcd.controlplane.io/v1
 kind: FluxInstance
 metadata:
@@ -25,6 +21,6 @@ spec:
   sync:
     kind: GitRepository
     url: "https://github.com/vimal-vijayan/homelab-proxmox.git"
-    ref: "main"
+    ref: "refs/heads/main"
     path: "clusters/homelab"
-    pullSecret: "git-token-auth"
+    pullSecret: "flux-system"
