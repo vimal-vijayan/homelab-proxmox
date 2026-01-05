@@ -5,7 +5,7 @@ metadata:
   name: metallb
   namespace: metallb-system
 spec:
-  interval: 15m
+  interval: 15m # Drift detection interval
   timeout: 5m
   chart:
     spec:
@@ -15,11 +15,11 @@ spec:
         kind: HelmRepository
         name: metallb
         namespace: metallb-system
-      interval: 5h
+      interval: 5h # Chart source interval
   releaseName: metallb
   targetNamespace: metallb-system
   install:
-    createNamespace: true
+    # createNamespace: true
     remediation:
       retries: 3
   upgrade:
