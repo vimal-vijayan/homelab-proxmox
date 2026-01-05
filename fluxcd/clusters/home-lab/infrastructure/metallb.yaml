@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  path: ./infrastructure/overlays/home-lab/metallb-install
+  path: ./fluxcd/infrastructure/overlays/home-lab/metallb-install
   prune: true
   wait: true
   sourceRef:
@@ -21,7 +21,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  path: ./infrastructure/overlays/home-lab/metallb-configuration
+  path: ./fluxcd/infrastructure/overlays/home-lab/metallb-configuration
   prune: true
   wait: true
   sourceRef:
