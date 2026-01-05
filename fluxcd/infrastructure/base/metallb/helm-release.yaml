@@ -19,7 +19,7 @@ spec:
   releaseName: metallb
   targetNamespace: metallb-system
   install:
-    # createNamespace: true
+    createNamespace: true
     remediation:
       retries: 3
   upgrade:
