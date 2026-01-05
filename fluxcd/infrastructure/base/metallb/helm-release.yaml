@@ -14,8 +14,8 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: metallb
-        namespace: flux-system
-      interval: 5m
+        namespace: metallb-system
+      interval: 5h
   releaseName: metallb
   targetNamespace: metallb-system
   install:
