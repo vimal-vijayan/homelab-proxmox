@@ -1,7 +1,7 @@
-# apiVersion: v1
-# kind: Namespace
-# metadata:
-#   name: traefik
-#   labels:
-#     name: traefik
-#     created-by: fluxcd
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+  labels:
+    name: cert-manager
+    created-by: fluxcd
