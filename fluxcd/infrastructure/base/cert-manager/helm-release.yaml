@@ -1,50 +1,49 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmChart
-metadata:
-  name: cert-manager
-  namespace: cert-manager
-spec:
-  interval: 5h
-  chart: cert-manager
-  reconcileStrategy: "ChartVersion"
-  sourceRef:
-    kind: HelmRepository
-    name: cert-manager
-  version: v1.19.2
-# ---
 # apiVersion: helm.toolkit.fluxcd.io/v2
-# kind: HelmRelease
+# kind: HelmChart
 # metadata:
 #   name: cert-manager
 #   namespace: cert-manager
 # spec:
-#   dependsOn:
-#     - name: metallb
-#       namespace: metallb-system
-#   interval: 15m # Drift detection interval
-#   timeout: 5m
-#   chart:
-#     spec:
-#       chart: cert-manager
-#       version: v1.19.2
-#       sourceRef:
-#         kind: HelmRepository
-#         name: cert-manager
-#         namespace: cert-manager
-#       interval: 5h # Chart source interval
-#   releaseName: cert-manager
-#   # targetNamespace: cert-manager
-#   install:
-#     # createNamespace: true
-#     remediation:
-#       retries: 3
-#   upgrade:
-#     remediation:
-#       retries: 3
-#   test:
-#     enable: true
-#   driftDetection:
-#     mode: enabled
-#   values:
-#     installCRDs: true # Ensure CRDs are installed
+#   interval: 5h
+#   chart: cert-manager
+#   reconcileStrategy: "ChartVersion"
+#   sourceRef:
+#     kind: HelmRepository
+#     name: cert-manager
+#   version: v1.19.2
+
+# ---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  dependsOn:
+    - name: metallb
+      namespace: metallb-system
+  interval: 15m # Drift detection interval
+  timeout: 5m
+  chart:
+    spec:
+      chart: cert-manager
+      version: v1.19.2
+      sourceRef:
+        kind: HelmRepository
+        name: cert-manager
+        namespace: cert-manager
+      interval: 5m # Chart source interval
+  releaseName: certmanager
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  test:
+    enable: true
+  driftDetection:
+    mode: enabled
+  values:
+    installCRDs: true # Ensure CRDs are installed
