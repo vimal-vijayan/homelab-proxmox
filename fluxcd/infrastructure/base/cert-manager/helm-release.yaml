@@ -20,9 +20,9 @@ spec:
         namespace: cert-manager
       interval: 5h # Chart source interval
   releaseName: cert-manager
-  targetNamespace: cert-manager
+  # targetNamespace: cert-manager
   install:
-    createNamespace: true
+    # createNamespace: true
     remediation:
       retries: 3
   upgrade:
