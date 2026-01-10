@@ -17,7 +17,6 @@ spec:
         namespace: traefik
       interval: 5h # Chart source interval
   releaseName: traefik
-  # targetNamespace: traefik
   install:
     remediation:
       retries: 3
