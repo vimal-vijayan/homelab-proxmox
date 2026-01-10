@@ -4,9 +4,9 @@ metadata:
   name: infrastructure
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 1m
   path: ./fluxcd/infrastructure/overlays/home-lab
-  prune: true
+  prune: false
   wait: true
   sourceRef:
     kind: GitRepository
