@@ -28,3 +28,18 @@ spec:
     enable: true
   driftDetection:
     mode: enabled
+  values:
+    service:
+      type: LoadBalancer
+    gateway:
+      enabled: false
+    gatewayClass:
+      enabled: false
+    providers:
+      kubernetesCRD:
+        enabled: true
+      kubernetesIngress:
+        enabled: false
+    logs:
+      general:
+        level: INFO
