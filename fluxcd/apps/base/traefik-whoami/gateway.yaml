@@ -35,6 +35,6 @@ spec:
             value: /
 
        backendRefs:
-        - name: whoami
+        - name: whoami-http
           namespace: traefik-whoami
           port: 80
