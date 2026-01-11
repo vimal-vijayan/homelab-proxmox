@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - nginx-demo-app
   - traefik-whoami
+  - demo-store
