@@ -11,7 +11,5 @@ spec:
     kind: GitRepository
     name: flux-system
   dependsOn:
-    - name: metallb
-      namespace: flux-system
     - name: infrastructure
       namespace: flux-system
