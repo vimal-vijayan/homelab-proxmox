@@ -11,8 +11,6 @@ spec:
     kind: GitRepository
     name: flux-system
   dependsOn:
-    - name: traefik
-      namespace: flux-system
     - name: metallb
       namespace: flux-system
     - name: infrastructure
