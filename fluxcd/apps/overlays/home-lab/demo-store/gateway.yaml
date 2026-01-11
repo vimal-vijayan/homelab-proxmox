@@ -32,4 +32,4 @@ spec:
           value: /
       backendRefs:
         - name: store-front
-          port: 8080
+          port: 80
