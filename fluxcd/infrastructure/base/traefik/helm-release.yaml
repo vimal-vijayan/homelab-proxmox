@@ -37,6 +37,9 @@ spec:
     gatewayClass:
       enabled: false
     providers:
+      kubernetesGateway:
+        enabled: true
+        experimentalChannel: false
       kubernetesCRD:
         enabled: true
       kubernetesIngress:
@@ -44,3 +47,6 @@ spec:
     logs:
       general:
         level: INFO
+      access:
+        enabled: true
+        format: "json"
