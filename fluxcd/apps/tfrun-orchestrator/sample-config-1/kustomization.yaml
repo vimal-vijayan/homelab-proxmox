@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - demo-workspace-01.yaml
   - demo-workspace-02.yaml
+  - demo-workspace-03.yaml
