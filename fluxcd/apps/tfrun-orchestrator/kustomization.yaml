@@ -1,0 +1,5 @@
+apiVersion: Kustomization.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - sample-config-1
+  - sample-config-2
