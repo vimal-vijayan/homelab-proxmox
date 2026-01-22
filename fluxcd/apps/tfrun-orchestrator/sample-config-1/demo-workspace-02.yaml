@@ -22,7 +22,7 @@ spec:
       provider: scalr
       hostname: essity.scalr.io
       organization: cet-launchpad
-      workspace: demo-workspace-01
+      workspace: demo-workspace-02
       agentPoolId: "ap-v0p08qgiq6mohe7ns"
   arguments:
     autoApprove: "true"
