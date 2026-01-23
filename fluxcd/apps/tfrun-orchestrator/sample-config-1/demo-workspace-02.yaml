@@ -15,7 +15,7 @@ spec:
     version: "1.10.5"
   source:
     module: https://github.com/vimal-vijayan/my-app.git
-    ref: v0.0.3
+    ref: v0.0.4
     credentialsSecretRef: git-credentials
   backend:
     cloud:
