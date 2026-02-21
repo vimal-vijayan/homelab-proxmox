@@ -9,7 +9,7 @@ spec:
   timeout: 5m
   chart:
     spec:
-      chart: argocd
+      chart: argo-cd
       version: v1.19.2
       sourceRef:
         kind: HelmRepository
