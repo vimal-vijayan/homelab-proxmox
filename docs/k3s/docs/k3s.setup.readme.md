@@ -96,7 +96,7 @@ Set variables:
 
 ```bash
 export VIP=10.50.10.200
-export INTERFACE=ens18
+export INTERFACE=ens19
 export KVVERSION=$(curl -sL https://api.github.com/repos/kube-vip/kube-vip/releases | jq -r ".[0].name")
 echo "$KVVERSION"
 ```
@@ -140,7 +140,7 @@ sudo systemctl stop k3s
 3. Verify another control-plane node acquires the VIP within a few seconds:
 
 ```bash
-ip -o -4 addr show dev ens18 | grep 10.50.10.200
+ip -o -4 addr show dev ens19 | grep 10.50.10.200
 ```
 
 4. Start K3s again on the stopped node:
