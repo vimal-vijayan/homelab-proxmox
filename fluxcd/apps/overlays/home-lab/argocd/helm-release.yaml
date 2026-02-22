@@ -38,7 +38,7 @@ spec:
       httpRoute:
         enabled: true
         parentRefs:
-          - name: argocd-http-route
+          - name: argocd-gateway
             namespace: argocd
             sectionName: argocd-http
       rules:
