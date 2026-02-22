@@ -29,3 +29,20 @@ spec:
     mode: enabled
   values:
     installCRDs: true # Ensure CRDs are installed
+    global:
+      domain: argocd.yuxep.com
+    configs:
+      params:
+        server.insecure: "true" # Disable TLS for demo purposes
+    server:
+      httpRoute:
+        enabled: true
+        parentRefs:
+          - name: argocd-http-route
+            namespace: argocd
+            sectionName: argocd-http
+      rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
