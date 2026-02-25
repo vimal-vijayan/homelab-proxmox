@@ -4,3 +4,4 @@ resources:
   - cert-manager
   - gateway-api
   - traefik
+  - internet-gateway
