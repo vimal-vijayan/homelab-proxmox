@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: argo-cd
-      version: "v3.3.0"
+      version: "9.4.4"
       sourceRef:
         kind: HelmRepository
         name: argocd
@@ -28,14 +28,15 @@ spec:
   driftDetection:
     mode: enabled
   values:
-    installCRDs: true # Ensure CRDs are installed
+    crds:
+      install: true # Ensure CRDs are installed
     global:
       domain: argocd.yuxep.com
     configs:
       params:
         server.insecure: "true" # Disable TLS for demo purposes
     server:
-      httpRoute:
+      httproute:
         enabled: true
         parentRefs:
           - name: argocd-gateway
@@ -43,8 +44,8 @@ spec:
             sectionName: argocd-http
         hostnames:
           - argocd.yuxep.com
-      rules:
-        - matches:
-            - path:
-                type: PathPrefix
-                value: /
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
