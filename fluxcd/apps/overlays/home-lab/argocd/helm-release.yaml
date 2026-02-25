@@ -41,6 +41,8 @@ spec:
           - name: argocd-gateway
             namespace: argocd
             sectionName: argocd-http
+        hostnames:
+          - argocd.yuxep.com
       rules:
         - matches:
             - path:
