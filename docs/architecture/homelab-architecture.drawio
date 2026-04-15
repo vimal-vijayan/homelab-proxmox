@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="1">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- INTERNET ZONE -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <mxCell id="zone-internet" value="🌐  Internet / WAN" style="swimlane;startSize=30;fillColor=#263238;strokeColor=#78909c;fontColor=#ffffff;fontSize=13;fontStyle=1;rounded=1;arcSize=3;" vertex="1" parent="1">
+      <mxGeometry x="30" y="30" width="340" height="160" as="geometry" />
+    </mxCell>
+    <mxCell id="isp" value="ISP / WAN Uplink" style="shape=mxgraph.network.cloud;fillColor=#546e7a;strokeColor=#b0bec5;fontColor=#ffffff;fontSize=11;" vertex="1" parent="zone-internet">
+      <mxGeometry x="20" y="55" width="120" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="ts-coord" value="Tailscale&#xa;Coordination Server" style="shape=mxgraph.network.server;fillColor=#00695c;strokeColor=#80cbc4;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-internet">
+      <mxGeometry x="200" y="55" width="120" height="80" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- REMOTE ACCESS -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <mxCell id="zone-remote" value="👤  Remote Access" style="swimlane;startSize=30;fillColor=#3e2723;strokeColor=#fb8c00;fontColor=#ffffff;fontSize=13;fontStyle=1;rounded=1;arcSize=3;" vertex="1" parent="1">
+      <mxGeometry x="30" y="220" width="340" height="140" as="geometry" />
+    </mxCell>
+    <mxCell id="laptop" value="Admin Laptop&#xa;(Tailscale Client)" style="shape=mxgraph.network.laptop;fillColor=#bf360c;strokeColor=#ffcc80;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-remote">
+      <mxGeometry x="30" y="50" width="100" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="phone" value="Mobile Device&#xa;(Tailscale Client)" style="shape=mxgraph.network.mobile;fillColor=#bf360c;strokeColor=#ffcc80;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-remote">
+      <mxGeometry x="170" y="50" width="60" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- PROXMOX HOST -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <mxCell id="zone-proxmox" value="🖥️  Proxmox Hypervisor — Bare Metal" style="swimlane;startSize=40;fillColor=#1a237e;strokeColor=#5c6bc0;fontColor=#ffffff;fontSize=14;fontStyle=1;rounded=1;arcSize=2;" vertex="1" parent="1">
+      <mxGeometry x="420" y="30" width="1200" height="1110" as="geometry" />
+    </mxCell>
+
+    <!-- ─── pfSense VM ─────────────────────────────────── -->
+    <mxCell id="zone-pfsense" value="🔥  pfSense VM — Firewall / Router / VPN" style="swimlane;startSize=35;fillColor=#7b1d1d;strokeColor=#ef5350;fontColor=#ffffff;fontSize=13;fontStyle=1;rounded=1;arcSize=3;" vertex="1" parent="zone-proxmox">
+      <mxGeometry x="20" y="60" width="1160" height="230" as="geometry" />
+    </mxCell>
+
+    <mxCell id="pf-wan" value="WAN Interface&#xa;(DHCP / Static)" style="rounded=1;fillColor=#c62828;strokeColor=#ff8a80;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-pfsense">
+      <mxGeometry x="20" y="70" width="140" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="pf-fw" value="Firewall Rules&#xa;NAT / DHCP&#xa;DNS Resolver" style="rounded=1;fillColor=#ad1457;strokeColor=#f48fb1;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-pfsense">
+      <mxGeometry x="200" y="60" width="140" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="pf-ts" value="Tailscale Package&#xa;Subnet Router&#xa;Exit Node" style="rounded=1;fillColor=#6a1b9a;strokeColor=#ce93d8;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-pfsense">
+      <mxGeometry x="380" y="60" width="140" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="pf-vlan10" value="VLAN 10&#xa;K3s Network&#xa;10.10.0.0/24" style="rounded=1;fillColor=#1b5e20;strokeColor=#81c784;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-pfsense">
+      <mxGeometry x="560" y="60" width="130" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="pf-vlan20" value="VLAN 20&#xa;SIEM Network&#xa;10.20.0.0/24" style="rounded=1;fillColor=#1a237e;strokeColor=#7986cb;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-pfsense">
+      <mxGeometry x="720" y="60" width="130" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="pf-vlan30" value="VLAN 30&#xa;Mgmt Network&#xa;10.0.0.0/24" style="rounded=1;fillColor=#e65100;strokeColor=#ffb74d;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-pfsense">
+      <mxGeometry x="880" y="60" width="130" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="pf-haproxy" value="HAProxy&#xa;(optional reverse proxy)" style="rounded=1;fillColor=#880e4f;strokeColor=#f48fb1;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-pfsense">
+      <mxGeometry x="1040" y="60" width="100" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="pf-note" value="All inter-VLAN traffic must traverse pfSense — firewall policy enforced at every hop" style="text;fontColor=#ffcdd2;fontSize=9;fontStyle=2;align=center;" vertex="1" parent="zone-pfsense">
+      <mxGeometry x="20" y="165" width="1120" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- ─── K3s VLAN ───────────────────────────────────── -->
+    <mxCell id="zone-k3s" value="🔒  K3s Private Network — VLAN 10 — 10.10.0.0/24" style="swimlane;startSize=35;fillColor=#1b5e20;strokeColor=#66bb6a;fontColor=#ffffff;fontSize=13;fontStyle=1;rounded=1;arcSize=3;" vertex="1" parent="zone-proxmox">
+      <mxGeometry x="20" y="320" width="760" height="760" as="geometry" />
+    </mxCell>
+
+    <!-- K3s nodes -->
+    <mxCell id="k3s-cp" value="Control Plane&#xa;10.10.0.10&#xa;(Ubuntu VM)" style="shape=mxgraph.network.server;fillColor=#2e7d32;strokeColor=#a5d6a7;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-k3s">
+      <mxGeometry x="40" y="60" width="100" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="k3s-w1" value="Worker Node 1&#xa;10.10.0.11&#xa;(Ubuntu VM)" style="shape=mxgraph.network.server;fillColor=#388e3c;strokeColor=#a5d6a7;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-k3s">
+      <mxGeometry x="180" y="60" width="100" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="k3s-w2" value="Worker Node 2&#xa;10.10.0.12&#xa;(Ubuntu VM)" style="shape=mxgraph.network.server;fillColor=#388e3c;strokeColor=#a5d6a7;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-k3s">
+      <mxGeometry x="320" y="60" width="100" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="k3s-w3" value="Worker Node 3&#xa;10.10.0.13&#xa;(Ubuntu VM)" style="shape=mxgraph.network.server;fillColor=#388e3c;strokeColor=#a5d6a7;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-k3s">
+      <mxGeometry x="460" y="60" width="100" height="80" as="geometry" />
+    </mxCell>
+
+    <!-- Cluster services box -->
+    <mxCell id="zone-k3s-services" value="Cluster Services" style="swimlane;startSize=25;fillColor=#004d40;strokeColor=#80cbc4;fontColor=#ffffff;fontSize=11;fontStyle=1;rounded=1;" vertex="1" parent="zone-k3s">
+      <mxGeometry x="20" y="180" width="720" height="550" as="geometry" />
+    </mxCell>
+
+    <!-- Networking layer -->
+    <mxCell id="svc-metallb" value="MetalLB&#xa;L2 LoadBalancer" style="rounded=1;fillColor=#00695c;strokeColor=#80cbc4;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="20" y="40" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="svc-traefik" value="Traefik&#xa;Ingress + Gateway API" style="rounded=1;fillColor=#00695c;strokeColor=#80cbc4;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="170" y="40" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="svc-certmgr" value="cert-manager&#xa;TLS Automation" style="rounded=1;fillColor=#00695c;strokeColor=#80cbc4;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="320" y="40" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="svc-cilium" value="Cilium CNI&#xa;Network Policy" style="rounded=1;fillColor=#00695c;strokeColor=#80cbc4;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="470" y="40" width="130" height="60" as="geometry" />
+    </mxCell>
+
+    <!-- GitOps layer -->
+    <mxCell id="svc-flux" value="FluxCD&#xa;GitOps Controller" style="rounded=1;fillColor=#1565c0;strokeColor=#90caf9;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="20" y="130" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="svc-argocd" value="ArgoCD&#xa;App Delivery" style="rounded=1;fillColor=#1565c0;strokeColor=#90caf9;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="170" y="130" width="130" height="60" as="geometry" />
+    </mxCell>
+
+    <!-- Security layer -->
+    <mxCell id="svc-kyverno" value="Kyverno&#xa;Policy Engine" style="rounded=1;fillColor=#6a1b9a;strokeColor=#ce93d8;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="20" y="220" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="svc-falco" value="Falco&#xa;Runtime Detection" style="rounded=1;fillColor=#6a1b9a;strokeColor=#ce93d8;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="170" y="220" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="svc-trivy" value="Trivy&#xa;Vuln Scanning" style="rounded=1;fillColor=#6a1b9a;strokeColor=#ce93d8;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="320" y="220" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="svc-sops" value="SOPS / Sealed Secrets&#xa;Secret Management" style="rounded=1;fillColor=#6a1b9a;strokeColor=#ce93d8;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="470" y="220" width="130" height="60" as="geometry" />
+    </mxCell>
+
+    <!-- Observability layer -->
+    <mxCell id="svc-prom" value="Prometheus&#xa;Metrics" style="rounded=1;fillColor=#4e342e;strokeColor=#ffab91;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="20" y="310" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="svc-loki" value="Loki&#xa;Log Aggregation" style="rounded=1;fillColor=#4e342e;strokeColor=#ffab91;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="170" y="310" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="svc-otel" value="OpenTelemetry&#xa;Tracing" style="rounded=1;fillColor=#4e342e;strokeColor=#ffab91;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="320" y="310" width="130" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="svc-velero" value="Velero&#xa;Backup &amp; DR" style="rounded=1;fillColor=#4e342e;strokeColor=#ffab91;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="470" y="310" width="130" height="60" as="geometry" />
+    </mxCell>
+
+    <!-- Apps layer -->
+    <mxCell id="svc-apps" value="Workloads / Applications&#xa;(demo-store, nginx-demo, whoami, …)" style="rounded=1;fillColor=#37474f;strokeColor=#90a4ae;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="20" y="400" width="580" height="60" as="geometry" />
+    </mxCell>
+
+    <!-- Layer labels -->
+    <mxCell id="lbl-net" value="Networking" style="text;fontColor=#80cbc4;fontSize=9;fontStyle=3;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="620" y="55" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl-gitops" value="GitOps" style="text;fontColor=#90caf9;fontSize=9;fontStyle=3;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="620" y="145" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl-sec" value="Security" style="text;fontColor=#ce93d8;fontSize=9;fontStyle=3;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="620" y="235" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl-obs" value="Observability" style="text;fontColor=#ffab91;fontSize=9;fontStyle=3;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="620" y="325" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl-apps" value="Apps" style="text;fontColor=#90a4ae;fontSize=9;fontStyle=3;" vertex="1" parent="zone-k3s-services">
+      <mxGeometry x="620" y="415" width="80" height="30" as="geometry" />
+    </mxCell>
+
+    <!-- ─── SIEM VLAN ──────────────────────────────────── -->
+    <mxCell id="zone-siem" value="🛡️  SIEM Network — VLAN 20 — 10.20.0.0/24" style="swimlane;startSize=35;fillColor=#1a237e;strokeColor=#7986cb;fontColor=#ffffff;fontSize=13;fontStyle=1;rounded=1;arcSize=3;" vertex="1" parent="zone-proxmox">
+      <mxGeometry x="810" y="320" width="370" height="760" as="geometry" />
+    </mxCell>
+
+    <mxCell id="siem-wazuh" value="Wazuh Manager&#xa;10.20.0.10&#xa;(SIEM Core)" style="shape=mxgraph.network.server;fillColor=#283593;strokeColor=#9fa8da;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-siem">
+      <mxGeometry x="130" y="55" width="100" height="90" as="geometry" />
+    </mxCell>
+    <mxCell id="siem-elastic" value="Elasticsearch&#xa;+ Kibana&#xa;10.20.0.11" style="rounded=1;fillColor=#1565c0;strokeColor=#90caf9;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-siem">
+      <mxGeometry x="30" y="190" width="140" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="siem-indexer" value="Wazuh Indexer&#xa;(OpenSearch)&#xa;10.20.0.12" style="rounded=1;fillColor=#1565c0;strokeColor=#90caf9;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-siem">
+      <mxGeometry x="200" y="190" width="140" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="siem-grafana" value="Grafana&#xa;Dashboards&#xa;10.20.0.20" style="rounded=1;fillColor=#4527a0;strokeColor=#b39ddb;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-siem">
+      <mxGeometry x="30" y="320" width="140" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="siem-alert" value="Alertmanager&#xa;+ PagerDuty&#xa;10.20.0.21" style="rounded=1;fillColor=#4527a0;strokeColor=#b39ddb;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-siem">
+      <mxGeometry x="200" y="320" width="140" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="siem-agents" value="Wazuh Agents&#xa;(installed on every VM)" style="rounded=1;fillColor=#283593;strokeColor=#9fa8da;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-siem">
+      <mxGeometry x="50" y="440" width="260" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="siem-seconion" value="Security Onion&#xa;(optional — full NSM)&#xa;10.20.0.30" style="rounded=1;fillColor=#0d47a1;strokeColor=#64b5f6;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="zone-siem">
+      <mxGeometry x="50" y="550" width="260" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="siem-note" value="Receives syslog, Wazuh agent events,&#xa;Falco alerts, and pfSense firewall logs" style="text;fontColor=#c5cae9;fontSize=9;fontStyle=2;align=center;" vertex="1" parent="zone-siem">
+      <mxGeometry x="20" y="670" width="320" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- ─── Mgmt VLAN ──────────────────────────────────── -->
+    <mxCell id="zone-mgmt" value="⚙️  Management Network — VLAN 30 — 10.0.0.0/24" style="swimlane;startSize=35;fillColor=#bf360c;strokeColor=#ffb74d;fontColor=#ffffff;fontSize=12;fontStyle=1;rounded=1;arcSize=3;" vertex="1" parent="zone-proxmox">
+      <mxGeometry x="20" y="1050" width="1160" height="40" as="geometry" />
+    </mxCell>
+    <mxCell id="mgmt-pve" value="Proxmox Web UI (10.0.0.1)" style="rounded=1;fillColor=#d84315;strokeColor=#ffcc80;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-mgmt">
+      <mxGeometry x="20" y="8" width="200" height="25" as="geometry" />
+    </mxCell>
+    <mxCell id="mgmt-pfsense-ui" value="pfSense Web UI (10.0.0.2)" style="rounded=1;fillColor=#d84315;strokeColor=#ffcc80;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-mgmt">
+      <mxGeometry x="250" y="8" width="200" height="25" as="geometry" />
+    </mxCell>
+    <mxCell id="mgmt-bmc" value="BMC / IPMI (bare metal)" style="rounded=1;fillColor=#d84315;strokeColor=#ffcc80;fontColor=#ffffff;fontSize=10;" vertex="1" parent="zone-mgmt">
+      <mxGeometry x="480" y="8" width="200" height="25" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- EDGES / CONNECTIONS -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+
+    <!-- Internet → pfSense WAN -->
+    <mxCell id="e-isp-pfw" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef5350;strokeWidth=3;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="isp" target="pf-wan" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Tailscale control plane ↔ pfSense TS package -->
+    <mxCell id="e-ts-pf" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ce93d8;strokeWidth=2;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="ts-coord" target="pf-ts" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="390" y="265" />
+          <mxPoint x="390" y="148" />
+          <mxPoint x="825" y="148" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Laptop ↔ pfSense TS (WireGuard tunnel) -->
+    <mxCell id="e-laptop-pf" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ff9800;strokeWidth=2;dashed=1;" edge="1" source="laptop" target="pf-ts" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="200" y="348" />
+          <mxPoint x="200" y="400" />
+          <mxPoint x="390" y="400" />
+          <mxPoint x="390" y="195" />
+          <mxPoint x="825" y="195" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- pfSense WAN → FW rules -->
+    <mxCell id="e-wan-fw" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef5350;strokeWidth=2;" edge="1" source="pf-wan" target="pf-fw" parent="zone-pfsense">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- FW → TS -->
+    <mxCell id="e-fw-ts" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ce93d8;strokeWidth=2;" edge="1" source="pf-fw" target="pf-ts" parent="zone-pfsense">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- FW → VLANs -->
+    <mxCell id="e-fw-v10" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#81c784;strokeWidth=2;" edge="1" source="pf-fw" target="pf-vlan10" parent="zone-pfsense">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e-fw-v20" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#7986cb;strokeWidth=2;" edge="1" source="pf-fw" target="pf-vlan20" parent="zone-pfsense">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e-fw-v30" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ffb74d;strokeWidth=2;" edge="1" source="pf-fw" target="pf-vlan30" parent="zone-pfsense">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- pfSense VLAN10 → K3s zone (label on parent edge) -->
+    <mxCell id="e-v10-k3s" value="VLAN 10" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#66bb6a;strokeWidth=3;fontColor=#66bb6a;fontSize=10;fontStyle=1;" edge="1" source="pf-vlan10" target="k3s-cp" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="1006" y="290" />
+          <mxPoint x="560" y="290" />
+          <mxPoint x="560" y="395" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- pfSense VLAN20 → SIEM zone -->
+    <mxCell id="e-v20-siem" value="VLAN 20" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#7986cb;strokeWidth=3;fontColor=#7986cb;fontSize=10;fontStyle=1;" edge="1" source="pf-vlan20" target="siem-wazuh" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="1166" y="290" />
+          <mxPoint x="1166" y="360" />
+          <mxPoint x="1070" y="360" />
+          <mxPoint x="1070" y="390" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- K3s internal edges -->
+    <mxCell id="e-cp-w1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#a5d6a7;strokeWidth=1;" edge="1" source="k3s-cp" target="k3s-w1" parent="zone-k3s">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e-cp-w2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#a5d6a7;strokeWidth=1;" edge="1" source="k3s-cp" target="k3s-w2" parent="zone-k3s">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e-cp-w3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#a5d6a7;strokeWidth=1;" edge="1" source="k3s-cp" target="k3s-w3" parent="zone-k3s">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e-cp-svc" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#80cbc4;strokeWidth=2;" edge="1" source="k3s-cp" target="zone-k3s-services" parent="zone-k3s">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- K3s → SIEM log shipping (dashed, crosses VLANs via pfSense) -->
+    <mxCell id="e-k3s-siem" value="Wazuh agents&#xa;+ log shipping" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#9fa8da;strokeWidth=2;dashed=1;fontColor=#9fa8da;fontSize=9;" edge="1" source="k3s-cp" target="siem-agents" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="560" y="820" />
+          <mxPoint x="940" y="820" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Falco → Wazuh alerts -->
+    <mxCell id="e-falco-wazuh" value="Falco alerts" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ce93d8;strokeWidth=2;dashed=1;fontColor=#ce93d8;fontSize=9;" edge="1" source="svc-falco" target="siem-wazuh" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="790" y="620" />
+          <mxPoint x="940" y="620" />
+          <mxPoint x="940" y="435" />
+          <mxPoint x="1070" y="435" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Prometheus → Grafana in SIEM -->
+    <mxCell id="e-prom-grafana" value="metrics" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ffab91;strokeWidth=1;dashed=1;fontColor=#ffab91;fontSize=9;" edge="1" source="svc-prom" target="siem-grafana" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="510" y="710" />
+          <mxPoint x="940" y="710" />
+          <mxPoint x="940" y="710" />
+          <mxPoint x="1060" y="710" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- FluxCD → Internet (GitHub) -->
+    <mxCell id="e-flux-gh" value="pulls from GitHub&#xa;(via pfSense NAT)" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#90caf9;strokeWidth=2;dashed=1;fontColor=#90caf9;fontSize=9;" edge="1" source="svc-flux" target="isp" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="510" y="640" />
+          <mxPoint x="200" y="640" />
+          <mxPoint x="200" y="110" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- SIEM internal -->
+    <mxCell id="e-wazuh-elastic" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#9fa8da;strokeWidth=1;" edge="1" source="siem-wazuh" target="siem-elastic" parent="zone-siem">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e-wazuh-index" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#9fa8da;strokeWidth=1;" edge="1" source="siem-wazuh" target="siem-indexer" parent="zone-siem">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e-elastic-graf" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b39ddb;strokeWidth=1;" edge="1" source="siem-elastic" target="siem-grafana" parent="zone-siem">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e-index-alert" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b39ddb;strokeWidth=1;" edge="1" source="siem-indexer" target="siem-alert" parent="zone-siem">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e-agents-wazuh" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#9fa8da;strokeWidth=1;" edge="1" source="siem-agents" target="siem-wazuh" parent="zone-siem">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- LEGEND -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <mxCell id="legend" value="Legend" style="swimlane;startSize=25;fillColor=#37474f;strokeColor=#78909c;fontColor=#ffffff;fontSize=12;fontStyle=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="30" y="390" width="360" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="l1" value="" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ef5350;strokeWidth=3;" edge="1" parent="legend">
+      <mxGeometry relative="1" as="geometry"><Array as="points"/><mxPoint x="20" y="55" as="sourcePoint"/><mxPoint x="90" y="55" as="targetPoint"/></mxGeometry>
+    </mxCell>
+    <mxCell id="l1t" value="WAN / Internet traffic" style="text;fontColor=#ffffff;fontSize=10;" vertex="1" parent="legend"><mxGeometry x="100" y="43" width="200" height="25" as="geometry"/></mxCell>
+    <mxCell id="l2" value="" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#66bb6a;strokeWidth=3;" edge="1" parent="legend">
+      <mxGeometry relative="1" as="geometry"><Array as="points"/><mxPoint x="20" y="85" as="sourcePoint"/><mxPoint x="90" y="85" as="targetPoint"/></mxGeometry>
+    </mxCell>
+    <mxCell id="l2t" value="VLAN 10 — K3s Network" style="text;fontColor=#ffffff;fontSize=10;" vertex="1" parent="legend"><mxGeometry x="100" y="73" width="200" height="25" as="geometry"/></mxCell>
+    <mxCell id="l3" value="" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#7986cb;strokeWidth=3;" edge="1" parent="legend">
+      <mxGeometry relative="1" as="geometry"><Array as="points"/><mxPoint x="20" y="115" as="sourcePoint"/><mxPoint x="90" y="115" as="targetPoint"/></mxGeometry>
+    </mxCell>
+    <mxCell id="l3t" value="VLAN 20 — SIEM Network" style="text;fontColor=#ffffff;fontSize=10;" vertex="1" parent="legend"><mxGeometry x="100" y="103" width="200" height="25" as="geometry"/></mxCell>
+    <mxCell id="l4" value="" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ff9800;strokeWidth=2;dashed=1;" edge="1" parent="legend">
+      <mxGeometry relative="1" as="geometry"><Array as="points"/><mxPoint x="20" y="145" as="sourcePoint"/><mxPoint x="90" y="145" as="targetPoint"/></mxGeometry>
+    </mxCell>
+    <mxCell id="l4t" value="Tailscale VPN tunnel" style="text;fontColor=#ffffff;fontSize=10;" vertex="1" parent="legend"><mxGeometry x="100" y="133" width="200" height="25" as="geometry"/></mxCell>
+    <mxCell id="l5" value="" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#9fa8da;strokeWidth=2;dashed=1;" edge="1" parent="legend">
+      <mxGeometry relative="1" as="geometry"><Array as="points"/><mxPoint x="20" y="175" as="sourcePoint"/><mxPoint x="90" y="175" as="targetPoint"/></mxGeometry>
+    </mxCell>
+    <mxCell id="l5t" value="Log / telemetry flow (cross-VLAN)" style="text;fontColor=#ffffff;fontSize=10;" vertex="1" parent="legend"><mxGeometry x="100" y="163" width="220" height="25" as="geometry"/></mxCell>
+
+  </root>
+</mxGraphModel>
