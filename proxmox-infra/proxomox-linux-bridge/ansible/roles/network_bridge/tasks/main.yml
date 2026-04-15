@@ -1,0 +1,99 @@
+---
+- name: Ensure community.proxmox collection is available
+  ansible.builtin.command: ansible-galaxy collection list community.proxmox
+  changed_when: false
+  delegate_to: localhost
+  run_once: true
+
+- name: Delete Linux bridges via Proxmox API (state=absent workaround)
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_api_host }}:8006/api2/json/nodes/{{ proxmox_node }}/network/{{ item.iface }}"
+    method: DELETE
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_api_user }}!{{ proxmox_api_token_id }}={{ proxmox_api_token_secret }}"
+    validate_certs: "{{ proxmox_validate_certs }}"
+    status_code: [200, 400, 500]
+  loop: "{{ proxmox_network_bridges | selectattr('state', 'equalto', 'absent') | list }}"
+  loop_control:
+    label: "{{ item.iface }}"
+  failed_when: >
+    delete_result.status == 400 and
+    'interface does not exist' not in (delete_result.json.errors.iface | default(''))
+  register: delete_result
+  delegate_to: localhost
+
+- name: Apply pending network config after deletions
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_api_host }}:8006/api2/json/nodes/{{ proxmox_node }}/network"
+    method: PUT
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_api_user }}!{{ proxmox_api_token_id }}={{ proxmox_api_token_secret }}"
+    validate_certs: "{{ proxmox_validate_certs }}"
+    status_code: 200
+  delegate_to: localhost
+  when: delete_result.results | selectattr('status', 'equalto', 200) | list | length > 0
+
+# POST — attempt to create each bridge.
+# Accept 400 "interface already exists" as a non-failure so the play is
+# idempotent: first run creates, subsequent runs skip gracefully.
+- name: Create Linux bridges (no-op if already exists)
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_api_host }}:8006/api2/json/nodes/{{ proxmox_node }}/network"
+    method: POST
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_api_user }}!{{ proxmox_api_token_id }}={{ proxmox_api_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      iface: "{{ item.iface }}"
+      type: "{{ item.iface_type }}"
+      cidr: "{{ item.cidr | default(omit) }}"
+      gateway: "{{ item.gateway | default(omit) }}"
+      mtu: "{{ item.mtu | default(omit) }}"
+      autostart: "{{ item.autostart | default(true) | int }}"
+      comments: "{{ item.comments | default(omit) }}"
+    validate_certs: "{{ proxmox_validate_certs }}"
+    status_code: [200, 400]
+  loop: "{{ proxmox_network_bridges | selectattr('state', 'ne', 'absent') | list }}"
+  loop_control:
+    label: "{{ item.iface }}"
+  failed_when: >
+    create_result_item.status == 400 and
+    'interface already exists' not in (create_result_item.json.errors.iface | default(''))
+  register: create_result_item
+  delegate_to: localhost
+
+# PUT — always sync config for present bridges so changes to cidr/comments/etc are applied.
+- name: Update Linux bridge config
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_api_host }}:8006/api2/json/nodes/{{ proxmox_node }}/network/{{ item.iface }}"
+    method: PUT
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_api_user }}!{{ proxmox_api_token_id }}={{ proxmox_api_token_secret }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      type: "{{ item.iface_type }}"
+      cidr: "{{ item.cidr | default(omit) }}"
+      gateway: "{{ item.gateway | default(omit) }}"
+      mtu: "{{ item.mtu | default(omit) }}"
+      autostart: "{{ item.autostart | default(true) | int }}"
+      comments: "{{ item.comments | default(omit) }}"
+    validate_certs: "{{ proxmox_validate_certs }}"
+    status_code: 200
+  loop: "{{ proxmox_network_bridges | selectattr('state', 'ne', 'absent') | list }}"
+  loop_control:
+    label: "{{ item.iface }}"
+  delegate_to: localhost
+  register: update_result
+
+- name: Apply pending network config via Proxmox API
+  ansible.builtin.uri:
+    url: "https://{{ proxmox_api_host }}:8006/api2/json/nodes/{{ proxmox_node }}/network"
+    method: PUT
+    headers:
+      Authorization: "PVEAPIToken={{ proxmox_api_user }}!{{ proxmox_api_token_id }}={{ proxmox_api_token_secret }}"
+    validate_certs: "{{ proxmox_validate_certs }}"
+    status_code: 200
+  delegate_to: localhost
+  when: update_result.results | selectattr('status', 'equalto', 200) | list | length > 0

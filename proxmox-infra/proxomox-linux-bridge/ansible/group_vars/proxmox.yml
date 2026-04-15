@@ -1,0 +1,40 @@
+# Proxmox API connection settings
+proxmox_api_host: "192.168.178.44"
+proxmox_api_user: "root@pam"
+# Use either api_password or token-based auth (token preferred for production)
+# proxmox_api_password: "{{ vault_proxmox_api_password }}"
+proxmox_api_token_id: "ansible"
+# proxmox_api_token_secret: "{{ vault_proxmox_api_token_secret }}"
+proxmox_api_token_secret: "7dcacdbf-edae-461c-bcc9-df28d2f993b1"
+
+proxmox_validate_certs: false
+
+# Proxmox node name (as shown in PVE UI)
+proxmox_node: "pve"
+
+# Network bridges to create
+proxmox_network_bridges:
+  # Management bridge (VLAN 10 — K3s cluster)
+  - iface: "vmbr10"
+    iface_type: bridge
+    # bridge_ports: "nic1"
+    cidr: "10.80.10.1/24"
+    autostart: true
+    comments: "K3s cluster VLAN 10"
+    state: absent   # example of how to remove a bridge by setting state=absent
+
+  # SIEM bridge (VLAN 20)
+  - iface: "vmbr20"
+    iface_type: bridge
+    # bridge_ports: ""
+    cidr: "10.80.20.1/24"
+    autostart: true
+    comments: "SIEM VLAN 20"
+    state: absent   # example of how to remove a bridge by setting state=absent
+
+  # WAN/upstream bridge — pre-created by Proxmox installer, already exists
+  # - iface: "vmbr0"
+  #   iface_type: bridge
+  #   bridge_ports: "eno2"
+  #   autostart: true
+  #   comments: "WAN uplink bridge for pfSense"

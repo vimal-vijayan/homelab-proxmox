@@ -1,0 +1,20 @@
+---
+- name: reload network config
+  community.proxmox.proxmox_node_network:
+    api_host: "{{ proxmox_api_host }}"
+    api_user: "{{ proxmox_api_user }}"
+    api_token_id: "{{ proxmox_api_token_id | default(omit) }}"
+    api_token_secret: "{{ proxmox_api_token_secret | default(omit) }}"
+    api_password: "{{ proxmox_api_password | default(omit) }}"
+    validate_certs: "{{ proxmox_validate_certs }}"
+    node: "{{ proxmox_node }}"
+    iface: "{{ proxmox_network_bridges[0].iface }}"
+    state: present
+  delegate_to: localhost
+  # The module writes a pending config; the node needs ifreload to activate it.
+  # Run: pvesh create /nodes/{node}/network  (reload) via raw API call below.
+
+- name: reload ifreload on node
+  ansible.builtin.command: ifreload -a
+  become: true
+  listen: reload network config

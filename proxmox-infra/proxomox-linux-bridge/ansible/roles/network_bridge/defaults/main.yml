@@ -1,0 +1,3 @@
+# Defaults — override in group_vars/host_vars or playbook vars
+proxmox_validate_certs: false
+proxmox_network_bridges: []

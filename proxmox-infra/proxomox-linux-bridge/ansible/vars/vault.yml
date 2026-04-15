@@ -1,0 +1,4 @@
+# Encrypt this file with: ansible-vault encrypt vars/vault.yml
+# Decrypt for editing:    ansible-vault edit vars/vault.yml
+vault_proxmox_api_token_secret: "7dcacdbf-edae-461c-bcc9-df28d2f993b1"
+# vault_proxmox_api_password: "REPLACE_WITH_YOUR_PASSWORD"   # alternative to token auth

@@ -1,0 +1,9 @@
+galaxy_info:
+  role_name: network_bridge
+  author: vimalvi
+  description: Creates Linux bridges on a Proxmox VE node via the API
+  min_ansible_version: "2.14"
+  collections:
+    - community.proxmox
+
+dependencies: []

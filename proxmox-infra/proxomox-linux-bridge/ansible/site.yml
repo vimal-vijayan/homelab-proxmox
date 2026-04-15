@@ -1,0 +1,24 @@
+---
+# Playbook: create_network_bridges.yml
+# Purpose: Create Linux bridges on Proxmox VE nodes using the Proxmox API.
+# Module:  community.proxmox.proxmox_node_network
+# Ref:     https://docs.ansible.com/ansible/latest/collections/community/proxmox/proxmox_node_network_module.html
+#
+# Usage:
+#   ansible-playbook -i inventory/hosts.ini site.yml
+#   ansible-playbook -i inventory/hosts.ini site.yml --ask-vault-pass   # when using vault
+#
+# Prerequisites:
+#   ansible-galaxy collection install community.proxmox
+#   Create an API token in PVE UI → Datacenter → Permissions → API Tokens
+#   (role: PVEAdmin or a custom role with SDN.Allocate + Sys.Modify)
+
+- name: Configure Proxmox network bridges
+  hosts: proxmox
+  gather_facts: false
+
+  # vars_files:
+  #   - vars/vault.yml          # contains vault_proxmox_api_token_secret
+
+  roles:
+    - network_bridge
