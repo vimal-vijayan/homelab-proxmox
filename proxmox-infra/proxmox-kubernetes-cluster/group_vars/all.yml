@@ -1,0 +1,20 @@
+---
+k3s_version: "latest"
+
+k3s_init_node_ip: "10.50.10.20"
+k3s_api_server: "https://10.50.10.20:6443"
+
+k3s_tls_sans:
+  - "192.168.178.65"
+  - "homelab.cluster.yuxep.com"
+  - "10.50.10.20"
+  - "10.50.10.200"
+
+k3s_token: "K107b53708c540b25b709520a13110e0d112334cc1f8a16e184060ece1e2f01eff5::server:f4dfd327669033530029eaf9649e6ffe"
+
+k3s_common_args: >-
+  --flannel-backend=none
+  --disable-network-policy
+  --disable=traefik
+  --disable=servicelb
+  --disable-kube-proxy

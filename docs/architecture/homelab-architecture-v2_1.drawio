@@ -1,0 +1,272 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.2 Chrome/134.0.6998.178 Electron/35.1.2 Safari/537.36" version="26.2.2">
+  <diagram id="_EF_amyfcc-BS5dPzOWF" name="Page-1">
+    <mxGraphModel dx="1020" dy="681" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1358" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="10" value="&lt;b&gt;Internet&lt;/b&gt;" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="830" y="30" width="180" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="&lt;b&gt;Cloudflare&lt;/b&gt;&#xa;CDN + Tunnel Endpoint&#xa;DNS: 1.1.1.1 / DoT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF6600;strokeColor=#CC5200;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;arcSize=8;" parent="1" vertex="1">
+          <mxGeometry x="1160" y="40" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="&lt;b&gt;Tailscale Control Plane&lt;/b&gt;&#xa;WireGuard Mesh Coordination&#xa;(Hosted by Tailscale / Headscale)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0d6395;strokeColor=#083657;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;arcSize=8;" parent="1" vertex="1">
+          <mxGeometry x="460" y="40" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="&lt;b&gt;Admin (Remote)&lt;/b&gt;&#xa;Tailscale client&#xa;kubectl / SSH" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0d6395;strokeColor=#083657;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;arcSize=8;" parent="1" vertex="1">
+          <mxGeometry x="120" y="40" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="20" value="&lt;b&gt;PROXMOX HYPERVISOR HOST&lt;/b&gt;" style="swimlane;startSize=32;fillColor=#f5f5f5;strokeColor=#555555;fontColor=#333333;fontSize=15;fontStyle=1;rounded=1;arcSize=2;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="80" y="190" width="1680" height="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="&lt;b&gt;vmbr0 — WAN Bridge&lt;/b&gt;  (Physical NIC / ISP uplink)" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=1;arcSize=50;" parent="20" vertex="1">
+          <mxGeometry x="560" y="55" width="500" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="30" value="&lt;b&gt;OPNsense Firewall VM&lt;/b&gt;&#xa;──────────────────────────────&#xa;🔥 Stateful Firewall + NAT&#xa;🌐 DNS Resolver → Cloudflare DoT&#xa;📡 DHCP (all bridges)&#xa;🔁 IDS/IPS (Suricata)&#xa;📊 Traffic Monitoring / NetFlow&#xa;🛡️ Firewall Rules:&#xa;   vmbr1 ↛ vmbr2  (blocked)&#xa;   vmbr-mgmt → all (allowed)&#xa;   vmbr1/2 → vmbr-mgmt (blocked)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=0;shadow=1;arcSize=6;align=left;spacingLeft=10;" parent="20" vertex="1">
+          <mxGeometry x="620" y="112" width="300" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="30a" value="WAN (vtnet0)" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=1;" parent="20" vertex="1">
+          <mxGeometry x="710" y="92" width="110" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="30b" value="LAN1 — K8s" style="text;html=1;strokeColor=#5b9bd5;fillColor=#e6f3ff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=1;" parent="20" vertex="1">
+          <mxGeometry x="380" y="320" width="100" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="30c" value="LAN2 — SIEM" style="text;html=1;strokeColor=#d79b00;fillColor=#fff4e6;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=1;" parent="20" vertex="1">
+          <mxGeometry x="1100" y="320" width="110" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="30d" value="LAN3 — MGMT" style="text;html=1;strokeColor=#b46504;fillColor=#f8e0c8;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=1;" parent="20" vertex="1">
+          <mxGeometry x="710" y="318" width="120" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="40" value="&lt;b&gt;vmbr1 — Kubernetes Private Bridge&lt;/b&gt;  (192.168.10.0/24)" style="swimlane;startSize=30;fillColor=#e6f3ff;strokeColor=#5b9bd5;fontColor=#1f4e79;fontSize=12;fontStyle=1;rounded=1;arcSize=2;shadow=1;" parent="20" vertex="1">
+          <mxGeometry x="60" y="360" width="960" height="490" as="geometry" />
+        </mxCell>
+        <mxCell id="44" value="&lt;b&gt;Pi-hole VM&lt;/b&gt;&#xa;─────────────&#xa;🛡️ DNS Sinkhole&#xa;📋 Ad/Tracker Blocking&#xa;🔗 Upstream → OPNsense&#xa;    (192.168.10.2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;shadow=1;arcSize=6;" parent="40" vertex="1">
+          <mxGeometry x="30" y="50" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="41" value="&lt;b&gt;K8s Control Plane&lt;/b&gt;&#xa;─────────────────&#xa;⚙️ API Server&#xa;📦 etcd (+ scheduled snapshots)&#xa;🗂️ Scheduler&#xa;🎛️ Controller Manager&#xa;    (192.168.10.10)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;shadow=1;arcSize=6;" parent="40" vertex="1">
+          <mxGeometry x="270" y="50" width="210" height="165" as="geometry" />
+        </mxCell>
+        <mxCell id="42" value="&lt;b&gt;K8s Worker Node 1&lt;/b&gt;&#xa;─────────────────&#xa;🐳 kubelet + kube-proxy&#xa;📦 App Pods&#xa;🔌 CNI (Cilium)&#xa;    (192.168.10.11)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;shadow=1;arcSize=6;" parent="40" vertex="1">
+          <mxGeometry x="520" y="50" width="200" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="43" value="&lt;b&gt;K8s Worker Node 2&lt;/b&gt;&#xa;─────────────────&#xa;🐳 kubelet + kube-proxy&#xa;📦 App Pods&#xa;🔌 CNI (Cilium)&#xa;    (192.168.10.12)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;shadow=1;arcSize=6;" parent="40" vertex="1">
+          <mxGeometry x="740" y="50" width="200" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="45" value="&lt;b&gt;cloudflared&lt;/b&gt; (DaemonSet)&#xa;────────────────────────────&#xa;☁️ Cloudflare Tunnel Daemon&#xa;🔒 Outbound-only TLS tunnel&#xa;🌍 Exposes K8s Ingress&#xa;    → apps.yourdomain.com" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF6600;strokeColor=#CC5200;fontColor=#ffffff;fontSize=11;shadow=1;arcSize=6;" parent="40" vertex="1">
+          <mxGeometry x="270" y="270" width="260" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="47" value="&lt;b&gt;Ingress Controller&lt;/b&gt;&#xa;(nginx / Traefik)&#xa;🔀 HTTP/HTTPS routing&#xa;    to app services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;shadow=1;arcSize=6;" parent="40" vertex="1">
+          <mxGeometry x="590" y="270" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="48b" value="&lt;b&gt;Wazuh Agents&lt;/b&gt;&#xa;on all K8s nodes&#xa;→ forward to SIEM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;shadow=1;arcSize=6;" parent="40" vertex="1">
+          <mxGeometry x="790" y="270" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="48" value="" style="endArrow=none;startArrow=none;html=1;strokeColor=#5b9bd5;strokeWidth=3;" parent="40" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="245" as="sourcePoint" />
+            <mxPoint x="930" y="245" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="48a" value="vmbr1 LAN Bus" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontColor=#1f4e79;fontStyle=3;" parent="40" vertex="1">
+          <mxGeometry x="800" y="232" width="120" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="bus1" value="" style="endArrow=open;endSize=6;html=1;strokeColor=#5b9bd5;strokeWidth=1.5;" parent="40" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="245" as="sourcePoint" />
+            <mxPoint x="130" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bus2" value="" style="endArrow=open;endSize=6;html=1;strokeColor=#5b9bd5;strokeWidth=1.5;" parent="40" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="375" y="245" as="sourcePoint" />
+            <mxPoint x="375" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bus3" value="" style="endArrow=open;endSize=6;html=1;strokeColor=#5b9bd5;strokeWidth=1.5;" parent="40" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="620" y="245" as="sourcePoint" />
+            <mxPoint x="620" y="205" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bus4" value="" style="endArrow=open;endSize=6;html=1;strokeColor=#5b9bd5;strokeWidth=1.5;" parent="40" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="840" y="245" as="sourcePoint" />
+            <mxPoint x="840" y="205" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" value="DNS queries" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9673a6;strokeWidth=1.5;dashed=1;fontStyle=3;fontSize=9;" parent="40" source="41" target="44" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="to Ingress" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#FF6600;strokeWidth=1.5;fontStyle=3;fontSize=9;" parent="40" source="45" target="47" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#d6b656;strokeWidth=1;" parent="40" source="47" target="42" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#d6b656;strokeWidth=1;" parent="40" source="47" target="43" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" value="kubectl API" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#d6b656;strokeWidth=1.5;fontStyle=3;fontSize=9;" parent="40" source="41" target="42" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#d6b656;strokeWidth=1.5;" parent="40" source="41" target="43" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="50" value="&lt;b&gt;vmbr2 — SIEM Lab Bridge&lt;/b&gt;  (192.168.20.0/24)  🔒 Isolated — no direct route to vmbr1" style="swimlane;startSize=30;fillColor=#fff4e6;strokeColor=#d79b00;fontColor=#7d3c00;fontSize=12;fontStyle=1;rounded=1;arcSize=2;shadow=1;" parent="20" vertex="1">
+          <mxGeometry x="1060" y="360" width="580" height="490" as="geometry" />
+        </mxCell>
+        <mxCell id="51" value="&lt;b&gt;Wazuh SIEM Manager&lt;/b&gt;&#xa;──────────────────────&#xa;🔍 Log Aggregation&#xa;⚠️ Threat Detection Rules&#xa;📈 Security Dashboards&#xa;🔔 Alerting&#xa;    (192.168.20.10)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;shadow=1;arcSize=6;" parent="50" vertex="1">
+          <mxGeometry x="40" y="55" width="220" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="52" value="&lt;b&gt;Log Collector VM&lt;/b&gt;&#xa;(Logstash / Filebeat)&#xa;──────────────────────&#xa;📥 Syslog receiver&#xa;    (UDP 514 / TCP 1514)&#xa;🔄 Normalise + forward&#xa;    → Wazuh Manager&#xa;    (192.168.20.11)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;shadow=1;arcSize=6;" parent="50" vertex="1">
+          <mxGeometry x="310" y="55" width="220" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="53" value="&lt;b&gt;Log Sources&lt;/b&gt;&#xa;──────────────&#xa;• Wazuh agents on K8s nodes&#xa;• OPNsense → syslog/NetFlow&#xa;• Pi-hole → query log&#xa;• Tailscale VM → syslog&#xa;• PBS VM → syslog" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;shadow=1;arcSize=6;align=left;spacingLeft=8;" parent="50" vertex="1">
+          <mxGeometry x="130" y="290" width="250" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="54" value="" style="endArrow=none;startArrow=none;html=1;strokeColor=#d79b00;strokeWidth=3;" parent="50" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="255" as="sourcePoint" />
+            <mxPoint x="550" y="255" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="54a" value="vmbr2 LAN Bus" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=9;fontColor=#7d3c00;fontStyle=3;" parent="50" vertex="1">
+          <mxGeometry x="420" y="243" width="120" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="sbus1" value="" style="endArrow=open;endSize=6;html=1;strokeColor=#d79b00;strokeWidth=1.5;" parent="50" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="255" as="sourcePoint" />
+            <mxPoint x="150" y="235" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sbus2" value="" style="endArrow=open;endSize=6;html=1;strokeColor=#d79b00;strokeWidth=1.5;" parent="50" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="255" as="sourcePoint" />
+            <mxPoint x="420" y="235" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13" value="Log forwarding" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#d79b00;strokeWidth=1.5;fontStyle=3;fontSize=9;" parent="50" source="52" target="51" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="60" value="&lt;b&gt;vmbr-mgmt — Management Bridge&lt;/b&gt;  (192.168.99.0/24)  🔐 Accessible only via Tailscale — NOT reachable from vmbr1 or vmbr2" style="swimlane;startSize=30;fillColor=#f8e0c8;strokeColor=#b46504;fontColor=#5d2e00;fontSize=12;fontStyle=1;rounded=1;arcSize=2;shadow=1;" parent="20" vertex="1">
+          <mxGeometry x="60" y="885" width="1580" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="61" value="&lt;b&gt;Proxmox Web UI + SSH&lt;/b&gt;&#xa;─────────────────────&#xa;🖥️ Host management&#xa;🔒 NIC bound to vmbr-mgmt&#xa;    (192.168.99.1)&#xa;⚠️ Not on any workload bridge" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;shadow=1;arcSize=6;" parent="60" vertex="1">
+          <mxGeometry x="40" y="45" width="220" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="62" value="&lt;b&gt;Tailscale Subnet Router VM&lt;/b&gt;  ✨ Standalone&#xa;──────────────────────────────────────────&#xa;🔐 WireGuard node (independent of K8s)&#xa;📡 Advertises: 192.168.10.0/24  192.168.20.0/24  192.168.99.0/24&#xa;🛡️ Lives on mgmt bridge — survives K8s failures&#xa;    (192.168.99.10)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0d6395;strokeColor=#083657;fontColor=#ffffff;fontSize=11;fontStyle=0;shadow=1;arcSize=6;" parent="60" vertex="1">
+          <mxGeometry x="300" y="45" width="440" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="63" value="&lt;b&gt;Proxmox Backup Server (PBS) VM&lt;/b&gt;  ✨ New&#xa;──────────────────────────────────────────────&#xa;💾 VM snapshot backups (all VMs)&#xa;🗄️ etcd snapshot target (K8s control plane)&#xa;📅 Scheduled backup jobs&#xa;    (192.168.99.20)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#647687;strokeColor=#314354;fontColor=#ffffff;fontSize=11;fontStyle=0;shadow=1;arcSize=6;" parent="60" vertex="1">
+          <mxGeometry x="790" y="45" width="420" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="64" value="&lt;b&gt;Optional: Jump / Bastion VM&lt;/b&gt;&#xa;────────────────────────────&#xa;🔑 SSH bastion for break-glass&#xa;    access if Tailscale is down&#xa;    (192.168.99.30)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;shadow=1;arcSize=6;" parent="60" vertex="1">
+          <mxGeometry x="1260" y="45" width="280" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="mgbus" value="" style="endArrow=none;startArrow=none;html=1;strokeColor=#b46504;strokeWidth=3;" parent="60" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="30" as="sourcePoint" />
+            <mxPoint x="1550" y="30" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" value="LAN1" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#5b9bd5;strokeWidth=2;fontStyle=1;fontSize=9;" parent="20" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="312" as="sourcePoint" />
+            <mxPoint x="480" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="LAN2" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#d79b00;strokeWidth=2;fontStyle=1;fontSize=9;" parent="20" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="860" y="312" as="sourcePoint" />
+            <mxPoint x="1160" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4b" value="LAN3 (MGMT)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#b46504;strokeWidth=2.5;fontStyle=1;fontSize=9;" parent="20" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="770" y="312" as="sourcePoint" />
+            <mxPoint x="770" y="885" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" value="DNS upstream" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9673a6;strokeWidth=2;dashed=1;fontStyle=3;fontSize=9;" parent="20" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="200" y="400" as="sourcePoint" />
+            <mxPoint x="620" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e14" value="Syslog / NetFlow" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#d79b00;strokeWidth=1.5;dashed=1;fontStyle=3;fontSize=9;" parent="20" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="920" y="250" as="sourcePoint" />
+            <mxPoint x="1200" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" value="Subnet route (192.168.10.0/24)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0d6395;strokeWidth=1.5;dashed=1;fontStyle=3;fontSize=9;fontColor=#0d6395;" parent="20" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="940" as="sourcePoint" />
+            <mxPoint x="490" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e1" value="ISP Traffic" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#6c8ebf;strokeWidth=2.5;fontStyle=1;fontSize=9;" parent="1" source="10" target="30" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="☁️ Cloudflare Tunnel (outbound TLS)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#FF6600;strokeWidth=2.5;fontStyle=1;fontSize=9;fontColor=#CC5200;" parent="1" source="45" target="11" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="919" y="710" />
+              <mxPoint x="919" y="160" />
+              <mxPoint x="1265" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" value="WireGuard / DERP relay" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0d6395;strokeWidth=2.5;dashed=1;fontStyle=1;fontSize=9;fontColor=#0d6395;" parent="1" source="62" target="12" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="1060" />
+              <mxPoint x="600" y="160" />
+              <mxPoint x="580" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" value="VPN peer" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0d6395;strokeWidth=2;dashed=1;fontStyle=1;fontSize=9;fontColor=#0d6395;" parent="1" source="13" target="12" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="HTTPS (public apps)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#FF6600;strokeWidth=1.5;dashed=1;fontStyle=1;fontSize=9;fontColor=#CC5200;" parent="1" source="10" target="11" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" value="etcd snapshots" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#647687;strokeWidth=1.5;dashed=1;fontStyle=3;fontSize=9;" parent="1" source="41" target="63" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="435" y="900" />
+              <mxPoint x="435" y="1185" />
+              <mxPoint x="1080" y="1185" />
+              <mxPoint x="1080" y="1040" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fw1" value="&lt;b&gt;OPNsense Firewall Rules (key)&lt;/b&gt;&#xa;────────────────────────────────────────&#xa;✅  vmbr1 → WAN (internet)           ALLOW&#xa;✅  vmbr2 → WAN (internet)           ALLOW&#xa;✅  vmbr-mgmt → all bridges          ALLOW&#xa;🚫  vmbr1 ↔ vmbr2                    BLOCK&#xa;🚫  vmbr1 → vmbr-mgmt               BLOCK&#xa;🚫  vmbr2 → vmbr-mgmt               BLOCK&#xa;✅  vmbr1/2 → OPNsense (DNS 53)     ALLOW&#xa;✅  Tailscale VM → all bridges       ALLOW (routed)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;shadow=1;arcSize=6;align=left;spacingLeft=10;" parent="1" vertex="1">
+          <mxGeometry x="1450" y="700" width="340" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="leg0" value="&lt;b&gt;LEGEND&lt;/b&gt;" style="swimlane;startSize=26;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;rounded=1;arcSize=4;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="82" y="1320" width="760" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" value="─── Physical network / VM traffic (LAN)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" parent="leg0" vertex="1">
+          <mxGeometry x="15" y="32" width="230" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="- - - Tunnel / VPN / DNS (logical overlay)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" parent="leg0" vertex="1">
+          <mxGeometry x="15" y="52" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="🟠  Cloudflare Tunnel — outbound only, zero open inbound ports on OPNsense" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" parent="leg0" vertex="1">
+          <mxGeometry x="15" y="72" width="440" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" value="🔵  Tailscale — standalone VM on mgmt bridge, independent of K8s health" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" parent="leg0" vertex="1">
+          <mxGeometry x="15" y="92" width="440" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5" value="🟤  vmbr-mgmt — Proxmox UI, PBS, Tailscale VM. Isolated from workload bridges." style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;" parent="leg0" vertex="1">
+          <mxGeometry x="15" y="112" width="480" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg6" value="✨  New components added in v2" style="text;html=1;strokeColor=none;fillColor=#ffffc0;align=left;fontSize=10;fontStyle=1;" parent="leg0" vertex="1">
+          <mxGeometry x="500" y="32" width="240" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

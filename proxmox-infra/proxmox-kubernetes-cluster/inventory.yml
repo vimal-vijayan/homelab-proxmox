@@ -1,0 +1,53 @@
+---
+all:
+  vars:
+    ansible_user: ubuntu
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+    ansible_python_interpreter: /usr/bin/python3
+
+  children:
+    k3s_cluster:
+      children:
+        k3s_servers:
+          children:
+            k3s_init:
+              hosts:
+                k3s-server-01:
+                  ansible_host: 10.50.10.20
+                  k3s_node_ip: "10.50.10.20"
+                  static_ip: "10.50.10.20/24"
+                  hostname: "k3s-server-01"
+
+            k3s_join:
+              hosts:
+                k3s-server-02:
+                  ansible_host: 10.50.10.21
+                  k3s_node_ip: "10.50.10.21"
+                  static_ip: "10.50.10.21/24"
+                  hostname: "k3s-server-02"
+
+                k3s-server-03:
+                  ansible_host: 10.50.10.22
+                  k3s_node_ip: "10.50.10.22"
+                  static_ip: "10.50.10.22/24"
+                  hostname: "k3s-server-03"
+
+        k3s_nodes:
+          hosts:
+            k3s-node-01:
+              ansible_host: 10.50.10.30
+              k3s_node_ip: "10.50.10.30"
+              static_ip: "10.50.10.30/24"
+              hostname: "k3s-node-01"
+
+            k3s-node-02:
+              ansible_host: 10.50.10.31
+              k3s_node_ip: "10.50.10.31"
+              static_ip: "10.50.10.31/24"
+              hostname: "k3s-node-02"
+
+            k3s-node-03:
+              ansible_host: 10.50.10.32
+              k3s_node_ip: "10.50.10.32"
+              static_ip: "10.50.10.32/24"
+              hostname: "k3s-node-03"

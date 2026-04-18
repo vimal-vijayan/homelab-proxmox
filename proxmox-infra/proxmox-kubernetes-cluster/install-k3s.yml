@@ -1,0 +1,64 @@
+---
+- name: Install k3s on init server node
+  hosts: k3s_init
+  become: true
+  tasks:
+    - name: Build TLS SAN arguments
+      ansible.builtin.set_fact:
+        tls_san_args: "{{ k3s_tls_sans | map('regex_replace', '^(.*)$', '--tls-san=\\1') | join(' ') }}"
+
+    - name: Install k3s (cluster init)
+      ansible.builtin.shell:
+        cmd: >
+          curl -sfL https://get.k3s.io | sh -s - server
+          --node-ip={{ k3s_init_node_ip }}
+          {{ tls_san_args }}
+          {{ k3s_common_args }}
+          --cluster-init
+      environment:
+        INSTALL_K3S_VERSION: "{{ k3s_version }}"
+      args:
+        creates: /usr/local/bin/k3s
+
+    - name: Wait for k3s to be ready
+      ansible.builtin.wait_for:
+        port: 6443
+        host: "{{ k3s_init_node_ip }}"
+        timeout: 120
+
+    - name: Verify node is Ready
+      ansible.builtin.command: k3s kubectl get nodes
+      register: node_status
+      retries: 10
+      delay: 10
+      until: "'Ready' in node_status.stdout"
+      changed_when: false
+
+- name: Join remaining server nodes to the cluster
+  hosts: k3s_join
+  become: true
+  serial: 1
+  tasks:
+    - name: Build TLS SAN arguments
+      ansible.builtin.set_fact:
+        tls_san_args: "{{ k3s_tls_sans | map('regex_replace', '^(.*)$', '--tls-san=\\1') | join(' ') }}"
+
+    - name: Join node to k3s cluster
+      ansible.builtin.shell:
+        cmd: >
+          curl -sfL https://get.k3s.io | sh -s - server
+          --server {{ k3s_api_server }}
+          --node-ip={{ k3s_node_ip }}
+          {{ tls_san_args }}
+          {{ k3s_common_args }}
+          --token={{ k3s_token }}
+      environment:
+        INSTALL_K3S_VERSION: "{{ k3s_version }}"
+      args:
+        creates: /usr/local/bin/k3s
+
+    - name: Wait for this node to join
+      ansible.builtin.wait_for:
+        port: 6443
+        host: "{{ k3s_node_ip }}"
+        timeout: 120
