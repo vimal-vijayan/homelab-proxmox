@@ -32,6 +32,13 @@ proxmox_network_bridges:
     comments: "SIEM VLAN 20"
     state: absent   # example of how to remove a bridge by setting state=absent
 
+  - iface: "vmbr99"
+    iface_type: bridge
+    cidr: "10.10.99.1/24"
+    autostart: true
+    comments: "Management bridge — Proxmox UI, PBS, Tailscale VM"
+    state: present
+
   # WAN/upstream bridge — pre-created by Proxmox installer, already exists
   # - iface: "vmbr0"
   #   iface_type: bridge

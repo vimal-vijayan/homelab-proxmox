@@ -63,18 +63,21 @@ flux get all -n flux-system
 
 The diagram source is at [docs/architecture/homelab-architecture-v2_1.drawio](docs/architecture/homelab-architecture-v2_1.drawio).
 
-| Bridge | Subnet | Role |
-|---|---|---|
-| vmbr0 | ISP uplink | WAN — physical NIC to home router |
-| vmbr1 | 192.168.10.0/24 | K8s private LAN |
-| vmbr2 | 192.168.20.0/24 | SIEM lab — isolated, no route to vmbr1 |
-| vmbr-mgmt | 192.168.99.0/24 | Management — Proxmox UI, PBS, Tailscale VM |
+| Bridge | Subnet | Physical NIC | Role |
+|---|---|---|---|
+| vmbr0 | 192.168.178.44/24 | nic1 (enx2c44fd2e3080) | WAN — uplink to home router |
+| vmbr1 | 10.10.10.0/24 | none (internal) | K8s private LAN |
+| vmbr2 | 10.10.20.0/24 | none (internal) | SIEM lab — isolated, no route to vmbr1 |
+| vmbr-mgmt | 10.10.99.0/24 | none (internal) | Management — Proxmox UI, PBS, Tailscale VM |
+
+> **Note:** Only vmbr0 has a physical NIC. All other bridges are internal-only. The Tailscale VM on vmbr-mgmt reaches the internet via OPNsense NAT (vmbr-mgmt → vmbr0), not via a direct NIC attachment.
 
 **OPNsense firewall rules (key):**
 - `vmbr1 ↔ vmbr2` — BLOCKED (K8s and SIEM are isolated from each other)
 - `vmbr1/vmbr2 → vmbr-mgmt` — BLOCKED
 - `vmbr-mgmt → all` — ALLOWED
 - `vmbr1/vmbr2 → WAN` — ALLOWED (internet egress via NAT)
+- `vmbr-mgmt → all` — ALLOWED (management can reach everything)
 - DNS (port 53) from all bridges to OPNsense — ALLOWED
 
 ### VM Inventory
@@ -82,24 +85,24 @@ The diagram source is at [docs/architecture/homelab-architecture-v2_1.drawio](do
 | VM | IP | Bridge | Purpose |
 |---|---|---|---|
 | OPNsense | gateway .1 per net | all | Stateful firewall, DHCP, DNS→Cloudflare DoT, IDS/IPS (Suricata), NetFlow |
-| Pi-hole | 192.168.10.2 | vmbr1 | DNS sinkhole, ad/tracker blocking, upstream → OPNsense |
-| K8s Control Plane | 192.168.10.10 | vmbr1 | API server, etcd, scheduler, controller-manager |
-| K8s Worker 1 | 192.168.10.11 | vmbr1 | App pods, Cilium CNI |
-| K8s Worker 2 | 192.168.10.12 | vmbr1 | App pods, Cilium CNI |
-| Wazuh SIEM Manager | 192.168.20.10 | vmbr2 | Log aggregation, threat detection, alerting |
-| Log Collector VM | 192.168.20.11 | vmbr2 | Logstash/Filebeat — syslog/NetFlow receiver → Wazuh |
-| Tailscale Subnet Router | 192.168.99.10 | vmbr-mgmt | Standalone WireGuard node — advertises all private subnets |
-| Proxmox Backup Server (PBS) | 192.168.99.20 | vmbr-mgmt | VM snapshots + etcd backup target |
-| Bastion VM (optional) | 192.168.99.30 | vmbr-mgmt | SSH break-glass if Tailscale is unavailable |
+| Pi-hole | 10.10.10.2 | vmbr1 | DNS sinkhole, ad/tracker blocking, upstream → OPNsense |
+| K8s Control Plane | 10.10.10.10 | vmbr1 | API server, etcd, scheduler, controller-manager |
+| K8s Worker 1 | 10.10.10.11 | vmbr1 | App pods, Cilium CNI |
+| K8s Worker 2 | 10.10.10.12 | vmbr1 | App pods, Cilium CNI |
+| Wazuh SIEM Manager | 10.10.20.10 | vmbr2 | Log aggregation, threat detection, alerting |
+| Log Collector VM | 10.10.20.11 | vmbr2 | Logstash/Filebeat — syslog/NetFlow receiver → Wazuh |
+| Tailscale Subnet Router | 10.10.99.10 | vmbr-mgmt | Standalone WireGuard node — advertises all private subnets |
+| Proxmox Backup Server (PBS) | 10.10.99.20 | vmbr-mgmt | VM snapshots + etcd backup target |
+| Bastion VM (optional) | 10.10.99.30 | vmbr-mgmt | SSH break-glass if Tailscale is unavailable |
 
 ### K3s Cluster
 
-- **API endpoint**: `https://192.168.10.10:6443`
+- **API endpoint**: `https://10.10.10.10:6443`
 - **CNI**: Cilium (kube-proxy disabled)
 - **Disabled**: Traefik, servicelb, network-policy
 - **Load balancer**: MetalLB — pool `10.50.10.100/32` (L2 advertisement)
 - **Ingress**: Kubernetes Gateway API via `cloudflared` DaemonSet (outbound TLS tunnel to Cloudflare, zero open inbound ports)
-- **Remote access**: Tailscale subnet router on vmbr-mgmt — advertises `192.168.10.0/24`, `192.168.20.0/24`, `192.168.99.0/24`
+- **Remote access**: Tailscale subnet router on vmbr-mgmt — advertises `10.10.10.0/24`, `10.10.20.0/24`, `10.10.99.0/24`
 
 ### GitOps Structure (Flux CD)
 
@@ -120,7 +123,7 @@ Apps are exposed via **Cloudflare Tunnel** (`cloudflared` DaemonSet in K8s) — 
 
 ### Log Sources → SIEM
 
-Wazuh agents run on all K8s nodes and forward to the SIEM bridge. OPNsense ships syslog/NetFlow, Pi-hole ships query logs, Tailscale VM and PBS send syslog — all via the Log Collector VM at `192.168.20.11`.
+Wazuh agents run on all K8s nodes and forward to the SIEM bridge. OPNsense ships syslog/NetFlow, Pi-hole ships query logs, Tailscale VM and PBS send syslog — all via the Log Collector VM at `10.10.20.11`.
 
 ## Infrastructure Build Order
 
@@ -128,7 +131,7 @@ Wazuh agents run on all K8s nodes and forward to the SIEM bridge. OPNsense ships
 2. Terraform: provision OPNsense VM and K3s VMs
 3. OPNsense: manual setup — WAN/LAN interfaces, DHCP, Suricata IDS/IPS, DNS-over-TLS, firewall rules
 4. Ansible: `setup-hosts.yml` then `install-k3s.yml`
-5. Pi-hole: deploy on vmbr1 (`192.168.10.2`), set OPNsense as upstream
+5. Pi-hole: deploy on vmbr1 (`10.10.10.2`), set OPNsense as upstream
 6. MetalLB: apply IP pool and L2Advertisement manifests
 7. Flux: bootstrap operator → apply FluxInstance → cluster self-manages from Git
 8. Tailscale subnet router VM: deploy on vmbr-mgmt, advertise all private subnets
