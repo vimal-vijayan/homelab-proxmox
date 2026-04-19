@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket                      = "terraform-state"
-    key                         = "pfsense/terraform.tfstate"
+    key                         = "proxmox-mgmt-tailscale/terraform.tfstate"
     region                      = "us-east-1"
     access_key                  = "minioadmin"
     secret_key                  = "minioadmin"

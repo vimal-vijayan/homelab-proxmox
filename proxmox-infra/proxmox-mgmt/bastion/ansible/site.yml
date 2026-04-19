@@ -1,0 +1,6 @@
+---
+- name: Configure bastion host
+  hosts: mgmt
+  become: true
+  roles:
+    - bastion

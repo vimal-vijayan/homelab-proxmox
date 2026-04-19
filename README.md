@@ -20,11 +20,47 @@ This repository documents a homelab platform built on Proxmox to run a secure, p
 ## Recommended Build Order
 
 1. Set up Proxmox host networking and VM base images.
-2. Deploy and configure pfSense interfaces, DNS, firewall rules, and WireGuard.
-3. Provision Ubuntu VMs for K3s control-plane and workers.
-4. Install K3s with Cilium CNI.
-5. Configure MetalLB for service exposure on internal networks.
-6. Add security, observability, backup, and SIEM components.
+2. **Start MinIO for Terraform state storage** (see [MinIO setup](#minio-terraform-state-backend) below).
+3. Deploy and configure pfSense interfaces, DNS, firewall rules, and WireGuard.
+4. Provision Ubuntu VMs for K3s control-plane and workers.
+5. Install K3s with Cilium CNI.
+6. Configure MetalLB for service exposure on internal networks.
+7. Add security, observability, backup, and SIEM components.
+
+## MinIO Terraform State Backend
+
+All Terraform projects in this repo use a local MinIO instance as the S3-compatible state backend. MinIO must be running before any `terraform init` or `terraform apply`.
+
+### Start MinIO
+
+```bash
+cd utilities/Minio
+docker compose up -d
+```
+
+MinIO API runs on `http://localhost:9000`, console at `http://localhost:9001` (credentials: `minioadmin` / `minioadmin`).
+
+### Create the state bucket (first-time only)
+
+```bash
+# Using the MinIO client (mc)
+brew install minio/stable/mc
+mc alias set local http://localhost:9000 minioadmin minioadmin
+mc mb local/terraform-state
+```
+
+Or open the console at `http://localhost:9001` and create a bucket named `terraform-state`.
+
+### Initialize a Terraform project against MinIO
+
+```bash
+cd <terraform-project-dir>
+terraform init          # first time
+# or, if migrating existing local state:
+terraform init -migrate-state
+```
+
+State files are stored per-project under the `terraform-state` bucket using the key path defined in each project's `backend "s3"` block (e.g. `proxmox-mgmt-tailscale/terraform.tfstate`).
 
 ## Documentation Map
 

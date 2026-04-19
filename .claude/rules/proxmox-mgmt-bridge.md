@@ -5,8 +5,8 @@
 The management bridge (`vmbr-mgmt`, `10.10.99.0/24`) is set up in three stages:
 
 1. **Bridge creation** — Ansible (`proxomox-linux-bridge/`)
-2. **VM provisioning** — Terraform (new dir: `proxmox-infra/proxmox-mgmt-vms/`)
-3. **VM configuration** — Ansible (new dir: `proxmox-infra/proxmox-mgmt-config/`)
+2. **VM provisioning** — Terraform (new dir: `proxmox-infra/proxmox-mgmt/tailscale/terraform/`, `proxmox-infra/proxmox-mgmt/pbs/terraform/`, `proxmox-infra/proxmox-mgmt/bastion/terraform/`)
+3. **VM configuration** — Ansible (new dir: `proxmox-infra/proxmox-mgmt-config/tailscale/ansible/`, `proxmox-infra/proxmox-mgmt-config/pbs/ansible/`, `proxmox-infra/proxmox-mgmt-config/bastion/ansible/`)
 
 ---
 

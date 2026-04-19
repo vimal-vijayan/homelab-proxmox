@@ -1,0 +1,9 @@
+---
+network_interface: ens18
+gateway: "10.10.99.1"
+dns_server: "10.10.10.1"   # OPNsense on vmbr1
+
+tailscale_advertise_routes:
+  - "10.10.10.0/24"   # K8s LAN (vmbr1)
+  - "10.10.20.0/24"   # SIEM lab (vmbr2)
+  - "10.10.99.0/24"   # Management bridge (vmbr-mgmt)

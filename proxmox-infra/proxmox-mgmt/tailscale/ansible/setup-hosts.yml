@@ -1,0 +1,58 @@
+---
+- name: Configure hostname and static IP for tailscale VM
+  hosts: mgmt
+  become: true
+  # First run: override ansible_host with the DHCP IP shown in Proxmox console
+  #   ansible-playbook -i inventory.yml setup-hosts.yml -e "ansible_host={{ bootstrap_host }}"
+  # Second run (and all subsequent): use the static IP in inventory normally
+  #   ansible-playbook -i inventory.yml setup-hosts.yml
+
+  tasks:
+    - name: Set hostname
+      ansible.builtin.hostname:
+        name: "{{ hostname }}"
+
+    - name: Update /etc/hosts with new hostname
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        regexp: '^127\.0\.1\.1'
+        line: "127.0.1.1 {{ hostname }}"
+
+    - name: Write netplan static IP config
+      ansible.builtin.copy:
+        dest: /etc/netplan/99-static.yaml
+        content: |
+          network:
+            version: 2
+            ethernets:
+              {{ network_interface }}:
+                dhcp4: false
+                addresses:
+                  - {{ static_ip }}
+                routes:
+                  - to: default
+                    via: {{ gateway }}
+                nameservers:
+                  addresses:
+                    - {{ dns_server }}
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Disable any existing DHCP netplan configs for the interface
+      ansible.builtin.shell: |
+        for f in /etc/netplan/*.yaml /etc/netplan/*.yml; do
+          [ "$f" = "/etc/netplan/99-static.yaml" ] && continue
+          if grep -q "{{ network_interface }}" "$f" 2>/dev/null; then
+            mv "$f" "${f}.disabled"
+          fi
+        done
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+    - name: Apply netplan configuration
+      ansible.builtin.command: netplan apply
+      async: 10
+      poll: 0
+      changed_when: true

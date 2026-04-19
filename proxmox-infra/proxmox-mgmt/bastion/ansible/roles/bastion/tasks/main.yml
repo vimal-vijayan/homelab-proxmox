@@ -1,0 +1,91 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install bastion packages
+  ansible.builtin.apt:
+    name: "{{ bastion_packages }}"
+    state: present
+
+- name: Install ansible community collections
+  ansible.builtin.command: ansible-galaxy collection install community.general ansible.posix
+  become: false
+  changed_when: true
+
+# SSH key — bastion uses this to reach all other VMs
+- name: Create .ssh directory for ubuntu user
+  ansible.builtin.file:
+    path: /home/ubuntu/.ssh
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: "0700"
+
+- name: Copy SSH private key to bastion
+  ansible.builtin.copy:
+    src: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+    dest: /home/ubuntu/.ssh/id_rsa
+    owner: ubuntu
+    group: ubuntu
+    mode: "0600"
+
+- name: Copy SSH public key to bastion
+  ansible.builtin.copy:
+    src: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
+    dest: /home/ubuntu/.ssh/id_rsa.pub
+    owner: ubuntu
+    group: ubuntu
+    mode: "0644"
+
+# SSH hardening
+- name: Harden sshd configuration
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    validate: sshd -t -f %s
+  loop:
+    - { regexp: '^#?PasswordAuthentication', line: "PasswordAuthentication {{ sshd_password_auth }}" }
+    - { regexp: '^#?PermitRootLogin',        line: "PermitRootLogin {{ sshd_permit_root_login }}" }
+    - { regexp: '^#?MaxAuthTries',           line: "MaxAuthTries {{ sshd_max_auth_tries }}" }
+    - { regexp: '^#?X11Forwarding',          line: "X11Forwarding no" }
+    - { regexp: '^#?AllowAgentForwarding',   line: "AllowAgentForwarding no" }
+  notify: Restart sshd
+
+- name: Install fail2ban
+  ansible.builtin.apt:
+    name: fail2ban
+    state: present
+
+- name: Configure fail2ban for sshd
+  ansible.builtin.copy:
+    dest: /etc/fail2ban/jail.d/sshd.conf
+    content: |
+      [sshd]
+      enabled  = true
+      port     = ssh
+      maxretry = 3
+      bantime  = 1h
+      findtime = 10m
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart fail2ban
+
+- name: Enable and start fail2ban
+  ansible.builtin.systemd:
+    name: fail2ban
+    state: started
+    enabled: true
+
+# Clone the homelab repo so Ansible playbooks are available on the bastion
+- name: Clone homelab repo
+  ansible.builtin.git:
+    repo: "{{ homelab_repo_url }}"
+    dest: /home/ubuntu/homelab-proxmox
+    version: main
+    update: true
+  become: false
+  when: homelab_repo_url is defined

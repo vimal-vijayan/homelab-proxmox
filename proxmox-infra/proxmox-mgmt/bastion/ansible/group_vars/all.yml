@@ -1,0 +1,19 @@
+---
+network_interface: ens18       # vmbr-mgmt — primary, static 10.10.99.30
+breakglass_interface: ens19   # vmbr0 (nic1) — DHCP, break-glass only
+gateway: "10.10.99.1"
+dns_server: "10.10.10.1"   # OPNsense on vmbr1
+
+# Packages installed on the bastion as Ansible control node
+bastion_packages:
+  - ansible
+  - python3-pip
+  - git
+  - curl
+  - jq
+  - sshpass
+
+# SSH hardening
+sshd_password_auth: "no"
+sshd_permit_root_login: "no"
+sshd_max_auth_tries: 3

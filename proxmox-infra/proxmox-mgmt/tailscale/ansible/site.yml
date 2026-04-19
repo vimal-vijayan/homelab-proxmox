@@ -1,0 +1,6 @@
+---
+- name: Configure Tailscale subnet router
+  hosts: mgmt
+  become: true
+  roles:
+    - tailscale
