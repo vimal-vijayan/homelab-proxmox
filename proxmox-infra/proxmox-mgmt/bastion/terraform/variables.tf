@@ -57,8 +57,20 @@ variable "storage" {
   default     = "nvme"
 }
 
-variable "iso" {
-  description = "Ubuntu ISO path on Proxmox (format: <storage>:iso/<filename>)"
+variable "template_name" {
+  description = "Name of the Proxmox cloud-init VM template to clone"
   type        = string
-  default     = "local:iso/ubuntu-24.04.3-live-server-amd64.iso"
+  default     = "ubuntu-2404-cloudinit-template"
+}
+
+variable "ci_user" {
+  description = "Cloud-init default user"
+  type        = string
+  default     = "ubuntu"
+}
+
+variable "ci_password" {
+  description = "Cloud-init user password — supply via TF_VAR_ci_password env var"
+  type        = string
+  sensitive   = true
 }

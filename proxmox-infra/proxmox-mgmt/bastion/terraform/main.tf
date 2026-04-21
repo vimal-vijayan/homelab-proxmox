@@ -4,6 +4,22 @@ resource "proxmox_vm_qemu" "bastion" {
   target_node = var.node
   memory      = var.memory
 
+  # Clone from cloud-init template instead of booting from ISO
+  clone      = var.template_name
+  full_clone = true
+
+  os_type    = "cloud-init"
+  boot       = "order=scsi0"
+  scsihw     = "virtio-scsi-pci"
+  agent      = 0
+  ipconfig0  = "ip=10.10.99.30/24,gw=10.10.99.1"
+  ipconfig1  = "ip=dhcp"
+  nameserver = "10.10.10.1"
+
+  ciuser      = var.ci_user
+  cipassword  = var.ci_password
+  # cicustom    = "user=local:snippets/bastion-user-data.yml"
+
   cpu {
     cores   = var.cores
     sockets = 1
@@ -15,13 +31,6 @@ resource "proxmox_vm_qemu" "bastion" {
   }
 
   disks {
-    ide {
-      ide2 {
-        cdrom {
-          iso = var.iso
-        }
-      }
-    }
     scsi {
       scsi0 {
         disk {
@@ -30,17 +39,23 @@ resource "proxmox_vm_qemu" "bastion" {
         }
       }
     }
+    ide {
+      ide2 {
+        cloudinit {
+          storage = var.storage
+        }
+      }
+    }
   }
 
-  # Management bridge — vmbr-mgmt (10.10.99.0/24), static IP 10.10.99.30
+  # Management bridge — vmbr99 (vmbr-mgmt, 10.10.99.0/24), static IP 10.10.99.30
   network {
     id     = 0
     model  = "virtio"
-    bridge = "vmbr99" # vmbr-mgmt is vmbr99 on the Proxmox host
+    bridge = "vmbr99"
   }
 
-  # WAN bridge — vmbr0, backed by nic1 (enx2c44fd2e3080), DHCP from home router
-  # Used for initial bootstrap before Tailscale is set up
+  # WAN bridge — vmbr0, DHCP from home router (bootstrap / break-glass access)
   network {
     id     = 1
     model  = "virtio"
