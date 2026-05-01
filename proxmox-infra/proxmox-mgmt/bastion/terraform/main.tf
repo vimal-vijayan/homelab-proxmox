@@ -30,6 +30,10 @@ resource "proxmox_vm_qemu" "bastion" {
     ignore_changes = [startup_shutdown]
   }
 
+  vga {
+    type = "std"
+  }
+
   disks {
     scsi {
       scsi0 {
