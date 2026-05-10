@@ -74,3 +74,9 @@ variable "ci_password" {
   type        = string
   sensitive   = true
 }
+
+variable "bootstrap_ip" {
+  description = "Static IP for the WAN (vmbr0) interface — used as bootstrap path for Ansible"
+  type        = string
+  default     = "192.168.178.35"
+}

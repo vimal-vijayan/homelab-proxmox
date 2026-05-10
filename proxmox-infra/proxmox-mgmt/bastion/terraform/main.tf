@@ -13,7 +13,7 @@ resource "proxmox_vm_qemu" "bastion" {
   scsihw     = "virtio-scsi-pci"
   agent      = 0
   ipconfig0  = "ip=10.10.99.30/24,gw=10.10.99.1"
-  ipconfig1  = "ip=dhcp"
+  ipconfig1  = "ip=${var.bootstrap_ip}/24,gw=192.168.178.1"
   nameserver = "10.10.10.1"
 
   ciuser      = var.ci_user

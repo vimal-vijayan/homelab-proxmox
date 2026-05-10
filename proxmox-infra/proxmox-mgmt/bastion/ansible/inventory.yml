@@ -10,6 +10,6 @@ all:
       hosts:
         bastion:
           ansible_host: 10.10.99.30      # static IP — used after setup-hosts.yml
-          bootstrap_host: 192.168.178.X  # replace with DHCP IP from Proxmox console
+          bootstrap_host: 192.168.178.35  # static WAN IP set via cloud-init (vmbr0)
           static_ip: "10.10.99.30/24"
           hostname: "bastion"
