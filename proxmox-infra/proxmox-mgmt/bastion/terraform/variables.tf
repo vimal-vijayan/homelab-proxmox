@@ -75,6 +75,11 @@ variable "ci_password" {
   sensitive   = true
 }
 
+variable "ci_ssh_public_key" {
+  description = "SSH public key injected via cloud-init — allows key-based auth from first boot"
+  type        = string
+}
+
 variable "bootstrap_ip" {
   description = "Static IP for the WAN (vmbr0) interface — used as bootstrap path for Ansible"
   type        = string

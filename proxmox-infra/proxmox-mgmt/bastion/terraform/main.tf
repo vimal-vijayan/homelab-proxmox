@@ -18,6 +18,7 @@ resource "proxmox_vm_qemu" "bastion" {
 
   ciuser      = var.ci_user
   cipassword  = var.ci_password
+  sshkeys     = var.ci_ssh_public_key
   # cicustom    = "user=local:snippets/bastion-user-data.yml"
 
   cpu {

@@ -4,12 +4,13 @@ all:
     ansible_user: ubuntu
     ansible_ssh_private_key_file: ~/.ssh/id_rsa
     ansible_python_interpreter: /usr/bin/python3
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
   children:
     mgmt:
       hosts:
         bastion:
-          ansible_host: 10.10.99.30      # static IP — used after setup-hosts.yml
+          ansible_host: 192.168.178.35   # bootstrap WAN IP (cloud-init, vmbr0) — switch to 10.10.99.30 after setup-hosts.yml
           bootstrap_host: 192.168.178.35  # static WAN IP set via cloud-init (vmbr0)
           static_ip: "10.10.99.30/24"
           hostname: "bastion"

@@ -14,6 +14,6 @@ bastion_packages:
   - sshpass
 
 # SSH hardening
-sshd_password_auth: "no"
+sshd_password_auth: "yes"
 sshd_permit_root_login: "no"
 sshd_max_auth_tries: 3
