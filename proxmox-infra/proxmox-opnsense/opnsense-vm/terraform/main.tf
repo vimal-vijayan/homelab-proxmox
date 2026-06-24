@@ -4,6 +4,12 @@ resource "proxmox_vm_qemu" "opnsense" {
   target_node = var.node
   memory      = var.memory
 
+  # OPNsense is ISO-based — no cloud-init, no ipconfig.
+  # Interfaces (WAN/LAN/OPT1) are assigned manually on first boot via the console.
+  boot   = "order=scsi1;scsi0"
+  scsihw = "virtio-scsi-pci"
+  agent  = 0
+
   cpu {
     cores   = var.cores
     sockets = 1
@@ -14,17 +20,23 @@ resource "proxmox_vm_qemu" "opnsense" {
     ignore_changes = [startup_shutdown]
   }
 
+  vga {
+    type = "std"
+  }
+
   disks {
     scsi {
+      # scsi0 — boot disk (persistent storage)
       scsi0 {
-        cdrom {
-          iso = var.iso
-        }
-      }
-      scsi1 {
         disk {
           size    = var.disk_size
           storage = var.storage
+        }
+      }
+      # scsi1 — OPNsense install ISO (cdrom); detach after install
+      scsi1 {
+        cdrom {
+          iso = var.iso
         }
       }
     }
@@ -49,5 +61,12 @@ resource "proxmox_vm_qemu" "opnsense" {
     id     = 2
     model  = "virtio"
     bridge = "vmbr2"
+  }
+
+  # OPT2 — Management bridge (10.10.99.0/24)
+  network {
+    id     = 3
+    model  = "virtio"
+    bridge = "vmbr-mgmt"
   }
 }

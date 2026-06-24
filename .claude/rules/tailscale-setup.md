@@ -42,6 +42,6 @@ This advertises all three private subnets:
 - `10.10.20.0/24` — SIEM lab (vmbr2)
 - `10.10.99.0/24` — Management bridge (vmbr-mgmt)
 
-The Tailscale VM sits at `10.10.99.10` on vmbr-mgmt and reaches the internet via OPNsense NAT.
+The Tailscale VM sits at `10.10.99.10` on vmbr-mgmt. Default gateway is `10.10.99.1` (OPNsense OPT2). Internet egress goes via OPNsense NAT (OPT2 → WAN) with full Suricata visibility. Do NOT use Proxmox host NAT — all MGMT traffic must route through OPNsense.
 
 If the device is authenticated by a user who can advertise the specified route in autoApprovers, the subnet router's routes will automatically be approved. You can also advertise any subset of the routes allowed by autoApprovers in the tailnet policy file. If you'd like to expose default routes (0.0.0.0/0 and ::/0), consider using exit nodes instead.

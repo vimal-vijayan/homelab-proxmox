@@ -1,0 +1,178 @@
+---
+# Firewall rules — evaluated top-down, first match wins per interface
+# BLOCK rules are logged; allow rules use aliases (not raw IPs)
+
+# ── BLOCK rules — segmentation policy ──────────────────────────────────────
+
+- name: Rule — Block K8s → MGMT (LAN tab)
+  ansibleguy.opnsense.rule:
+    firewall: "{{ opnsense_conn }}"
+    description: "Block K8s from reaching management bridge"
+    source_net: "K8s_LAN"
+    destination_net: "MGMT_LAN"
+    action: block
+    interface: ["{{ lan_interface }}"]
+    ip_protocol: inet
+    protocol: any
+    log: true
+    enabled: true
+    state: present
+  tags: [firewall]
+
+- name: Rule — Block SIEM → MGMT (OPT1 tab)
+  ansibleguy.opnsense.rule:
+    firewall: "{{ opnsense_conn }}"
+    description: "Block SIEM lab from reaching management bridge"
+    source_net: "SIEM_LAN"
+    destination_net: "MGMT_LAN"
+    action: block
+    interface: ["{{ opt1_interface }}"]
+    ip_protocol: inet
+    protocol: any
+    log: true
+    enabled: true
+    state: present
+  tags: [firewall]
+
+- name: Rule — Block K8s → SIEM (LAN tab)
+  ansibleguy.opnsense.rule:
+    firewall: "{{ opnsense_conn }}"
+    description: "Block K8s from reaching SIEM lab (segment isolation)"
+    source_net: "K8s_LAN"
+    destination_net: "SIEM_LAN"
+    action: block
+    interface: ["{{ lan_interface }}"]
+    ip_protocol: inet
+    protocol: any
+    log: true
+    enabled: true
+    state: present
+  tags: [firewall]
+
+- name: Rule — Block SIEM → K8s (OPT1 tab)
+  ansibleguy.opnsense.rule:
+    firewall: "{{ opnsense_conn }}"
+    description: "Block SIEM lab from reaching K8s (segment isolation)"
+    source_net: "SIEM_LAN"
+    destination_net: "K8s_LAN"
+    action: block
+    interface: ["{{ opt1_interface }}"]
+    ip_protocol: inet
+    protocol: any
+    log: true
+    enabled: true
+    state: present
+  tags: [firewall]
+
+# ── DNS ALLOW rules ─────────────────────────────────────────────────────────
+
+- name: Rule — Allow LAN → Pi-hole DNS
+  ansibleguy.opnsense.rule:
+    firewall: "{{ opnsense_conn }}"
+    description: "Allow K8s LAN DNS to Pi-hole"
+    source_net: "K8s_LAN"
+    destination_net: "Pi_hole"
+    destination_port: "53"
+    action: pass
+    interface: ["{{ lan_interface }}"]
+    ip_protocol: inet
+    protocol: tcp/udp
+    log: false
+    enabled: true
+    state: present
+  tags: [firewall]
+
+- name: Rule — Allow LAN → OPNsense DNS (Unbound fallback)
+  ansibleguy.opnsense.rule:
+    firewall: "{{ opnsense_conn }}"
+    description: "Allow K8s LAN DNS to OPNsense Unbound"
+    source_net: "K8s_LAN"
+    destination_net: "{{ lan_gateway }}"
+    destination_port: "53"
+    action: pass
+    interface: ["{{ lan_interface }}"]
+    ip_protocol: inet
+    protocol: tcp/udp
+    log: false
+    enabled: true
+    state: present
+  tags: [firewall]
+
+- name: Rule — Allow OPT1 → OPNsense DNS
+  ansibleguy.opnsense.rule:
+    firewall: "{{ opnsense_conn }}"
+    description: "Allow SIEM LAN DNS to OPNsense Unbound"
+    source_net: "SIEM_LAN"
+    destination_net: "{{ siem_gateway }}"
+    destination_port: "53"
+    action: pass
+    interface: ["{{ opt1_interface }}"]
+    ip_protocol: inet
+    protocol: tcp/udp
+    log: false
+    enabled: true
+    state: present
+  tags: [firewall]
+
+- name: Rule — Allow MGMT → OPNsense DNS
+  ansibleguy.opnsense.rule:
+    firewall: "{{ opnsense_conn }}"
+    description: "Allow management segment DNS to OPNsense Unbound"
+    source_net: "MGMT_LAN"
+    destination_net: "{{ mgmt_gateway }}"
+    destination_port: "53"
+    action: pass
+    interface: ["{{ opt2_interface }}"]
+    ip_protocol: inet
+    protocol: tcp/udp
+    log: false
+    enabled: true
+    state: present
+  tags: [firewall]
+
+# ── ALLOW rules — egress ────────────────────────────────────────────────────
+
+- name: Rule — Allow LAN → WAN (internet egress)
+  ansibleguy.opnsense.rule:
+    firewall: "{{ opnsense_conn }}"
+    description: "Allow K8s LAN internet egress"
+    source_net: "K8s_LAN"
+    destination_net: "any"
+    action: pass
+    interface: ["{{ lan_interface }}"]
+    ip_protocol: inet
+    protocol: any
+    log: false
+    enabled: true
+    state: present
+  tags: [firewall]
+
+- name: Rule — Allow OPT1 → WAN (internet egress)
+  ansibleguy.opnsense.rule:
+    firewall: "{{ opnsense_conn }}"
+    description: "Allow SIEM LAN internet egress"
+    source_net: "SIEM_LAN"
+    destination_net: "any"
+    action: pass
+    interface: ["{{ opt1_interface }}"]
+    ip_protocol: inet
+    protocol: any
+    log: false
+    enabled: true
+    state: present
+  tags: [firewall]
+
+- name: Rule — Allow MGMT → all (management unrestricted)
+  ansibleguy.opnsense.rule:
+    firewall: "{{ opnsense_conn }}"
+    description: "Allow management segment to reach all destinations"
+    source_net: "MGMT_LAN"
+    destination_net: "any"
+    action: pass
+    interface: ["{{ opt2_interface }}"]
+    ip_protocol: inet
+    protocol: any
+    log: false
+    enabled: true
+    state: present
+  tags: [firewall]

@@ -1,0 +1,6 @@
+---
+- name: OPNsense — Configure Suricata IDS/IPS
+  hosts: opnsense
+  gather_facts: false
+  roles:
+    - suricata

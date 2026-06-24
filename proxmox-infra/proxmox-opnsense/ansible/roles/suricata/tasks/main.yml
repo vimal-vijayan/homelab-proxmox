@@ -1,0 +1,42 @@
+---
+# Suricata IDS/IPS
+# IMPORTANT: Start in IDS mode (alerts only) before enabling IPS.
+#            Promote to IPS only after validating no false positives on real traffic.
+#
+# Set ids_mode variable to control this:
+#   ids_mode: false  → IDS only (alert, no block) — safe for initial deployment
+#   ids_mode: true   → IPS mode (active blocking)  — promote after IDS validation
+
+- name: Suricata — General configuration
+  ansibleguy.opnsense.ids_general:
+    firewall: "{{ opnsense_conn }}"
+    enabled: true
+    ips_mode: "{{ suricata_ips_mode | default(false) }}"  # default IDS-only; override to enable IPS
+    interfaces:
+      - "{{ wan_interface }}"
+      - "{{ lan_interface }}"
+      - "{{ opt1_interface }}"
+      - "{{ opt2_interface }}"
+    home_networks:
+      - "{{ lan_subnet }}"
+      - "{{ siem_subnet }}"
+      - "{{ mgmt_subnet }}"
+    pattern_matcher: "Hyperscan"  # preferred; falls back to AC-BS if unavailable
+    state: present
+  tags: [suricata]
+
+- name: Suricata — Enable ET Open ruleset
+  ansibleguy.opnsense.ids_ruleset:
+    firewall: "{{ opnsense_conn }}"
+    name: "ET Open"
+    enabled: true
+    state: present
+  tags: [suricata]
+
+- name: Suricata — Enable Abuse.ch botnet/C2 ruleset
+  ansibleguy.opnsense.ids_ruleset:
+    firewall: "{{ opnsense_conn }}"
+    name: "abuse.ch/feodotracker"
+    enabled: true
+    state: present
+  tags: [suricata]

@@ -117,15 +117,16 @@ ansible-playbook -i inventory.yml site.yml
 | `ens18` | `vmbr99` (vmbr-mgmt) | `10.10.99.30/24` | Primary — management network |
 | `ens19` | `vmbr0` | `192.168.178.35/24` (static, cloud-init) | Break-glass bootstrap only |
 
-Gateway: `10.10.99.1` (OPNsense `vmbr-mgmt` interface)
+Gateway: `10.10.99.1` (OPNsense OPT2 — `vtnet3`, `vmbr-mgmt` interface)
 
 ---
 
 ## Firewall Rules (OPNsense)
 
-- `vmbr-mgmt → all` — ALLOWED
-- `vmbr1 → vmbr-mgmt` — BLOCKED
-- `vmbr2 → vmbr-mgmt` — BLOCKED
+- `OPT2 (vmbr-mgmt) → all` — ALLOWED (rule on OPT2 tab)
+- `OPT2 → WAN` — ALLOWED + NAT masquerade (internet egress via OPNsense)
+- `LAN → vmbr-mgmt` — BLOCKED (K8s cannot reach management)
+- `OPT1 → vmbr-mgmt` — BLOCKED (SIEM cannot reach management)
 
 ---
 

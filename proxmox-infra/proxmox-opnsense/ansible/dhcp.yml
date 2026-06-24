@@ -1,0 +1,6 @@
+---
+- name: OPNsense — Configure DHCP
+  hosts: opnsense
+  gather_facts: false
+  roles:
+    - dhcp

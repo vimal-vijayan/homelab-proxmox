@@ -1,0 +1,6 @@
+---
+- name: OPNsense — Configure interfaces
+  hosts: opnsense
+  gather_facts: false
+  roles:
+    - interfaces

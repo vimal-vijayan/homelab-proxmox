@@ -155,8 +155,10 @@ Bastion provisioning complete.
 
 Next steps (manual):
   - Verify Tailscale subnet router can reach 10.10.99.30
-  - Confirm OPNsense firewall rule: vmbr-mgmt → all ALLOWED
-  - Test break-glass: ssh ubuntu@<dhcp-ip> (WAN fallback)
+  - Confirm OPNsense OPT2 firewall rule: MGMT → all ALLOWED
+  - Confirm OPNsense NAT: 10.10.99.0/24 → WAN masquerade
+  - Test internet from bastion: ping 1.1.1.1
+  - Test break-glass: ssh ubuntu@<dhcp-ip> (WAN fallback via ens19)
 ```
 
 ---

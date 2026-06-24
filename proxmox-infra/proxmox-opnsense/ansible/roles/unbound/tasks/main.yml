@@ -1,0 +1,25 @@
+---
+# Unbound DNS + DNS-over-TLS to Cloudflare
+# DNS chain: Clients → Pi-hole (10.10.10.2) → OPNsense Unbound → Cloudflare DoT
+# WARNING: Pi-hole upstream must be OPNsense — NOT the other way. Circular DNS breaks resolution.
+
+- name: Unbound — Enable and configure general settings
+  ansibleguy.opnsense.unbound_general:
+    firewall: "{{ opnsense_conn }}"
+    enabled: true
+    port: 53
+    dnssec: true
+    dns64: false
+    state: present
+  tags: [unbound]
+
+- name: Unbound — DNS-over-TLS forwarding to Cloudflare
+  ansibleguy.opnsense.unbound_dot:
+    firewall: "{{ opnsense_conn }}"
+    domain: "."        # forward all queries
+    server: "{{ dot_server }}"
+    port: "{{ dot_port }}"
+    verify: "{{ dot_verify_cn }}"
+    enabled: true
+    state: present
+  tags: [unbound]

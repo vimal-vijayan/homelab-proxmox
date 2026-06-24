@@ -51,3 +51,4 @@ all:
               k3s_node_ip: "10.50.10.32"
               static_ip: "10.50.10.32/24"
               hostname: "k3s-node-03"
+  

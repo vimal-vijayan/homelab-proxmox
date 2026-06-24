@@ -107,11 +107,16 @@ Gateway `10.10.99.1` is OPNsense's `vmbr-mgmt` interface (not provisioned here �
 
 ## Firewall Rules (OPNsense)
 
-These rules must be applied manually in OPNsense after bridge creation:
+`vmbr-mgmt` is attached to OPNsense as **OPT2** (`vtnet3`, `10.10.99.1/24`). Apply these rules in OPNsense after bridge creation and interface assignment:
 
-- `vmbr-mgmt → all` — ALLOWED (management can reach everything)
-- `vmbr1 → vmbr-mgmt` — BLOCKED (K8s cannot reach management)
-- `vmbr2 → vmbr-mgmt` — BLOCKED (SIEM cannot reach management)
+| Rule | Interface tab | Action |
+|---|---|---|
+| MGMT → all | OPT2 | ALLOW |
+| MGMT → WAN | OPT2 + NAT outbound | ALLOW + masquerade |
+| LAN → MGMT (10.10.99.0/24) | LAN | BLOCK + log |
+| OPT1 → MGMT (10.10.99.0/24) | OPT1 | BLOCK + log |
+
+Add `10.10.99.0/24` to Suricata home networks and add OPT2 to monitored interfaces.
 
 ---
 

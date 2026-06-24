@@ -15,124 +15,115 @@ I’ll do this in **3 layers**:
 
 ---
 
-## 1️⃣ Final IP Ranges (aligned with your bridges)
+## 1️⃣ Final IP Ranges (v2.1 — current)
 
-You currently have **4 internal networks + WAN**.
-We’ll use **non-overlapping /24s** (best practice).
+> **Updated to match the deployed architecture.**
+> The old hub-spoke design (vmbr1–vmbr4 / 10.50.x.x) has been replaced with a
+> flat-segment design managed by OPNsense.
 
-| Proxmox Bridge | Purpose               | CIDR               |
-| -------------- | --------------------- | ------------------ |
-| vmbr0          | WAN (Home network)    | `192.168.178.0/24` |
-| vmbr1          | Hub Network           | `10.50.0.0/24`     |
-| vmbr2          | Kubernetes Spoke      | `10.50.10.0/24`    |
-| vmbr3          | Lab Spoke             | `10.50.20.0/24`    |
-| vmbr4          | Utility / Tools Spoke | `10.50.30.0/24`    |
+| Proxmox Bridge | Purpose            | CIDR                 | Status        |
+| -------------- | ------------------ | -------------------- | ------------- |
+| vmbr0          | WAN — home router  | `192.168.178.0/24`   | ✅ Physical NIC (enx2c44fd2e3080) |
+| vmbr1          | K8s private LAN    | `10.10.10.0/24`      | ✅ Active      |
+| vmbr2          | SIEM lab           | `10.10.20.0/24`      | 🔜 Reserved (no VMs yet) |
+| vmbr-mgmt      | Management         | `10.10.99.0/24`      | ✅ Active      |
 
-✅ Clean
-✅ Easy to remember
-✅ Scales later (vmbr5 → 10.50.40.0/24)
+✅ OPNsense owns all gateways (`.1` per segment)
+✅ Clean trust-zone separation enforced by firewall rules
+✅ All internal bridges are internal-only (no physical NIC on vmbr1/vmbr2/vmbr-mgmt)
 
 ---
 
-## 2️⃣ Gateway & DHCP Strategy (IMPORTANT)
+## 2️⃣ Gateway & DHCP Strategy
 
 **Rule:**
-👉 *Proxmox bridges get NO IPs*
-👉 *pfSense owns all gateways*
+👉 *Proxmox bridges have NO IPs assigned*
+👉 *OPNsense owns all gateways*
 
-Each network’s **`.1` address = pfSense interface**
+Each network’s **`.1` address = OPNsense interface**
 
-| Network | Gateway      |
-| ------- | ------------ |
-| Hub     | `10.50.0.1`  |
-| K8s     | `10.50.10.1` |
-| Lab     | `10.50.20.1` |
-| Utility | `10.50.30.1` |
+| Network    | Interface    | Gateway       |
+| ---------- | ------------ | ------------- |
+| WAN        | vtnet0       | `192.168.178.1` (home router) |
+| K8s LAN    | vtnet1 (LAN) | `10.10.10.1`  |
+| SIEM lab   | vtnet2 (OPT1)| `10.10.20.1`  |
+| Management | vtnet3 (OPT2)| `10.10.99.1`  |
 
 DHCP:
-
-* Enable **DHCP on pfSense**
-* Disable DHCP everywhere else
-
----
-
-## 3️⃣ IP Allocation Table (Authoritative Plan)
-
-This is the table you can **save as project documentation**.
+* **K8s LAN (vmbr1)** — OPNsense DHCP; K8s nodes use static assignments
+* **SIEM lab (vmbr2)** — DHCP reserved for future use
+* **Management (vmbr-mgmt)** — **Static IPs only** (no DHCP on OPT2)
 
 ---
 
-### 🌍 WAN – vmbr0 (Already configured)
-
-| Component    | IP                           |
-| ------------ | ---------------------------- |
-| Home Router  | `192.168.178.1`              |
-| Proxmox Host | `192.168.178.44`             |
-| pfSense WAN  | DHCP (e.g. `192.168.178.50`) |
+## 3️⃣ IP Allocation Table (v2.1 — Authoritative Plan)
 
 ---
 
-### 🧠 HUB Network – vmbr1 (`10.50.0.0/24`)
+### 🌍 WAN – vmbr0 (`192.168.178.0/24`)
 
-| Component           | IP                |
-| ------------------- | ----------------- |
-| pfSense (Hub iface) | `10.50.0.1`       |
-| DNS Server          | `10.50.0.10`      |
-| SIEM / Syslog       | `10.50.0.20`      |
-| Jump / Admin VM     | `10.50.0.30`      |
-| Reserved            | `10.50.0.100–200` |
+> Physical NIC: `enx2c44fd2e3080`. Not managed by Terraform — configured on Proxmox host directly.
+
+| Component       | IP                            |
+| --------------- | ----------------------------- |
+| Home Router     | `192.168.178.1`               |
+| Proxmox Host    | `192.168.178.44`              |
+| OPNsense WAN    | DHCP (e.g. `192.168.178.50`)  |
 
 ---
 
-### ☸️ Kubernetes Spoke – vmbr2 (`10.50.10.0/24`)
+### ☸️ Kubernetes LAN – vmbr1 (`10.10.10.0/24`)
 
-| Component            | IP                 |
-| -------------------- | ------------------ |
-| pfSense (K8s iface)  | `10.50.10.1`       |
-| k3s Control Plane    | `10.50.10.10`      |
-| Worker Node 1        | `10.50.10.11`      |
-| Worker Node 2        | `10.50.10.12`      |
-| MetalLB Pool (later) | `10.50.10.200–220` |
+| Component          | IP              |
+| ------------------ | --------------- |
+| OPNsense LAN (vtnet1) | `10.10.10.1` |
+| Pi-hole DNS        | `10.10.10.2`    |
+| K3s Control Plane  | `10.10.10.10`   |
+| K3s Worker 1       | `10.10.10.11`   |
+| K3s Worker 2       | `10.10.10.12`   |
+| MetalLB Pool       | `10.50.10.100/32` |
 
-📌 **Important (K8s internal ranges – do NOT overlap):**
-
+📌 **K8s internal ranges — do NOT overlap:**
 ```
 Pod CIDR:     10.42.0.0/16
+Service CIDR: 10.43.0.0/16
 ```
 
 ---
 
-### 🧪 Lab Spoke – vmbr3 (`10.50.20.0/24`)
+### 🧪 SIEM Lab – vmbr2 (`10.10.20.0/24`) — 🔜 Reserved
 
-| Component             | IP            |
-| --------------------- | ------------- |
-| pfSense (Lab iface)   | `10.50.20.1`  |
-| Kali Linux            | `10.50.20.10` |
-| Victim VM             | `10.50.20.11` |
-| IDS Sensor (optional) | `10.50.20.20` |
+| Component              | IP              |
+| ---------------------- | --------------- |
+| OPNsense OPT1 (vtnet2) | `10.10.20.1`    |
+| Wazuh Manager          | `10.10.20.10`   *(future)* |
+| Log Collector VM       | `10.10.20.11`   *(future)* |
 
-🔥 Perfect for attack & detection labs
-
----
-
-### 🛠 Utility / Tools Spoke – vmbr4 (`10.50.30.0/24`)
-
-| Component               | IP            |
-| ----------------------- | ------------- |
-| pfSense (Utility iface) | `10.50.30.1`  |
-| Terraform VM            | `10.50.30.10` |
-| Git / CI                | `10.50.30.11` |
-| Monitoring Tools        | `10.50.30.20` |
+🔒 Isolated from vmbr1 via OPNsense firewall rules (`vmbr1 ↔ vmbr2` BLOCKED).
 
 ---
 
-## 4️⃣ Why this design is CORRECT (important for confidence)
+### 🛠 Management – vmbr-mgmt (`10.10.99.0/24`)
 
-* ✔ Matches Azure Hub-Spoke VNets
-* ✔ One gateway per spoke
-* ✔ Clean separation of trust zones
-* ✔ Easy firewall rule writing
-* ✔ SIEM-friendly (all traffic through pfSense)
+| Component                  | IP              |
+| -------------------------- | --------------- |
+| OPNsense OPT2 (vtnet3)     | `10.10.99.1`    |
+| Tailscale Subnet Router    | `10.10.99.10`   |
+| Proxmox Backup Server (PBS)| `10.10.99.20`   |
+| Bastion VM (break-glass)   | `10.10.99.30`   |
+
+🔒 **LAN/OPT1 → MGMT: BLOCKED.** MGMT → all: ALLOWED + NAT via OPNsense OPT2.
+
+---
+
+## 4️⃣ Why this design is correct
+
+* ✔ OPNsense owns all gateways — single choke point for firewall + IDS/IPS (Suricata)
+* ✔ One gateway per segment — clean trust-zone separation
+* ✔ Management plane isolated — LAN/SIEM cannot reach MGMT
+* ✔ Tailscale subnet router on MGMT bridge — advertises all private subnets remotely
+* ✔ SIEM-friendly — all inter-segment traffic transits OPNsense (NetFlow, syslog, Suricata)
+* ✔ Zero inbound ports — public apps exposed via Cloudflare Tunnel (outbound-only)
 
 ---
 ## 📸 Proxmox network implementation

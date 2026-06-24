@@ -1,0 +1,36 @@
+---
+# Outbound NAT — Hybrid mode (manual rules + auto for unlisted)
+# Switch to Hybrid mode first: Firewall → NAT → Outbound → Mode: Hybrid
+
+- name: NAT — K8s LAN internet egress (masquerade)
+  ansibleguy.opnsense.nat_outbound:
+    firewall: "{{ opnsense_conn }}"
+    interface: "{{ wan_interface }}"
+    source_net: "{{ lan_subnet }}"
+    target: ""  # empty = WAN address masquerade
+    description: "K8s LAN (vmbr1) NAT egress"
+    enabled: true
+    state: present
+  tags: [nat]
+
+- name: NAT — SIEM LAN internet egress (masquerade)
+  ansibleguy.opnsense.nat_outbound:
+    firewall: "{{ opnsense_conn }}"
+    interface: "{{ wan_interface }}"
+    source_net: "{{ siem_subnet }}"
+    target: ""
+    description: "SIEM lab (vmbr2) NAT egress"
+    enabled: true
+    state: present
+  tags: [nat]
+
+- name: NAT — MGMT internet egress (masquerade via OPT2)
+  ansibleguy.opnsense.nat_outbound:
+    firewall: "{{ opnsense_conn }}"
+    interface: "{{ wan_interface }}"
+    source_net: "{{ mgmt_subnet }}"
+    target: ""
+    description: "Management bridge (vmbr-mgmt) NAT egress"
+    enabled: true
+    state: present
+  tags: [nat]

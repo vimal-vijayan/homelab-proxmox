@@ -1,0 +1,6 @@
+---
+- name: OPNsense — Configure outbound NAT
+  hosts: opnsense
+  gather_facts: false
+  roles:
+    - nat

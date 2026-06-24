@@ -1,0 +1,34 @@
+---
+# Interface IP assignments
+# These tasks set OPNsense interface addresses.
+# NOTE: WAN IP is typically DHCP from home router — only manage static interfaces here.
+
+- name: Interface — LAN (vmbr1) static IP
+  ansibleguy.opnsense.interface:
+    firewall: "{{ opnsense_conn }}"
+    name: "{{ lan_interface }}"
+    ipv4_address: "{{ lan_gateway }}"
+    ipv4_subnet: 24
+    enabled: true
+    state: present
+  tags: [interfaces]
+
+- name: Interface — OPT1 (vmbr2 / SIEM) static IP
+  ansibleguy.opnsense.interface:
+    firewall: "{{ opnsense_conn }}"
+    name: "{{ opt1_interface }}"
+    ipv4_address: "{{ siem_gateway }}"
+    ipv4_subnet: 24
+    enabled: true
+    state: present
+  tags: [interfaces]
+
+- name: Interface — OPT2 (vmbr-mgmt) static IP
+  ansibleguy.opnsense.interface:
+    firewall: "{{ opnsense_conn }}"
+    name: "{{ opt2_interface }}"
+    ipv4_address: "{{ mgmt_gateway }}"
+    ipv4_subnet: 24
+    enabled: true
+    state: present
+  tags: [interfaces]

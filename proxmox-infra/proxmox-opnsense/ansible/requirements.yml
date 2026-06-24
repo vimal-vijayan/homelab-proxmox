@@ -1,0 +1,4 @@
+---
+collections:
+  - name: ansibleguy.opnsense
+    version: ">=0.15.0"

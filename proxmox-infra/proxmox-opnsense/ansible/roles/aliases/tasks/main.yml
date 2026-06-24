@@ -1,0 +1,82 @@
+---
+# Network and host aliases — must be applied before firewall rules
+
+- name: Alias — K8s LAN network
+  ansibleguy.opnsense.alias:
+    firewall: "{{ opnsense_conn }}"
+    name: K8s_LAN
+    type: network
+    content: "{{ lan_subnet }}"
+    description: "K8s private segment (vmbr1)"
+    enabled: true
+    state: present
+  tags: [aliases]
+
+- name: Alias — SIEM LAN network
+  ansibleguy.opnsense.alias:
+    firewall: "{{ opnsense_conn }}"
+    name: SIEM_LAN
+    type: network
+    content: "{{ siem_subnet }}"
+    description: "SIEM lab segment (vmbr2) — reserved"
+    enabled: true
+    state: present
+  tags: [aliases]
+
+- name: Alias — MGMT network
+  ansibleguy.opnsense.alias:
+    firewall: "{{ opnsense_conn }}"
+    name: MGMT_LAN
+    type: network
+    content: "{{ mgmt_subnet }}"
+    description: "Management bridge (vmbr-mgmt) — Tailscale, PBS, Bastion"
+    enabled: true
+    state: present
+  tags: [aliases]
+
+- name: Alias — All internal networks
+  ansibleguy.opnsense.alias:
+    firewall: "{{ opnsense_conn }}"
+    name: All_Internal
+    type: network
+    content:
+      - "{{ lan_subnet }}"
+      - "{{ siem_subnet }}"
+      - "{{ mgmt_subnet }}"
+    description: "All internal segments"
+    enabled: true
+    state: present
+  tags: [aliases]
+
+- name: Alias — Pi-hole host
+  ansibleguy.opnsense.alias:
+    firewall: "{{ opnsense_conn }}"
+    name: Pi_hole
+    type: host
+    content: "{{ pihole_ip }}"
+    description: "Pi-hole DNS sinkhole"
+    enabled: true
+    state: present
+  tags: [aliases]
+
+- name: Alias — Tailscale VM
+  ansibleguy.opnsense.alias:
+    firewall: "{{ opnsense_conn }}"
+    name: Tailscale_VM
+    type: host
+    content: "{{ tailscale_ip }}"
+    description: "Tailscale subnet router on vmbr-mgmt"
+    enabled: true
+    state: present
+  tags: [aliases]
+
+- name: Alias — K8s control plane
+  ansibleguy.opnsense.alias:
+    firewall: "{{ opnsense_conn }}"
+    name: K8s_CP
+    type: host
+    content: "{{ k8s_control_plane_ip }}"
+    description: "K8s control plane API server"
+    enabled: true
+    state: present
+  tags: [aliases]

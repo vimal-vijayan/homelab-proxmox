@@ -1,0 +1,6 @@
+---
+- name: OPNsense — Configure firewall rules
+  hosts: opnsense
+  gather_facts: false
+  roles:
+    - firewall

@@ -70,17 +70,17 @@ The diagram source is at [docs/architecture/homelab-architecture-v2_1.drawio](do
 | vmbr0 | 192.168.178.44/24 | nic1 (enx2c44fd2e3080) | WAN — uplink to home router | ✅ Active |
 | vmbr1 | 10.10.10.0/24 | none (internal) | K8s private LAN | ✅ Active |
 | vmbr2 | 10.10.20.0/24 | none (internal) | SIEM lab — network reserved, isolated | 🔜 Reserved |
-| vmbr-mgmt | 10.10.99.0/24 | none (internal) | Management — Proxmox UI, PBS, Tailscale VM | ✅ Active |
+| vmbr-mgmt | 10.10.99.0/24 | none (internal) | Management — Proxmox UI, PBS, Tailscale VM — OPNsense OPT2 | ✅ Active |
 
-> **Note:** Only vmbr0 has a physical NIC. All other bridges are internal-only. The Tailscale VM on vmbr-mgmt reaches the internet via OPNsense NAT (vmbr-mgmt → vmbr0), not via a direct NIC attachment.
+> **Note:** Only vmbr0 has a physical NIC. All other bridges are internal-only. The Tailscale VM on vmbr-mgmt reaches the internet via OPNsense OPT2 NAT (vmbr-mgmt → vtnet3 → vmbr0). OPNsense has full visibility and Suricata inspection over management traffic.
 
 **OPNsense firewall rules (key):**
 - `vmbr1 ↔ vmbr2` — BLOCKED (K8s and SIEM are isolated from each other)
 - `vmbr1/vmbr2 → vmbr-mgmt` — BLOCKED
-- `vmbr-mgmt → all` — ALLOWED (management can reach everything)
-- `vmbr1/vmbr2 → WAN` — ALLOWED (internet egress via NAT)
-- `vmbr1/vmbr2 → OPNsense port 53` — ALLOWED (DNS)
-- `Tailscale VM → all bridges` — ALLOWED
+- `vmbr-mgmt → all` — ALLOWED (OPT2 rule — management can reach everything)
+- `vmbr1/vmbr2/vmbr-mgmt → WAN` — ALLOWED (internet egress via NAT for all segments)
+- `vmbr1/vmbr2/vmbr-mgmt → OPNsense port 53` — ALLOWED (DNS)
+- `Tailscale VM → all bridges` — ALLOWED (via subnet router)
 
 ### VM Inventory
 

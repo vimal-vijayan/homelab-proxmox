@@ -1,0 +1,34 @@
+---
+# DHCP — dynamic pools on LAN (vmbr1) and OPT1 (vmbr2)
+# MGMT (vmbr-mgmt / OPT2) uses static IPs only — no DHCP pool
+
+- name: DHCP — LAN pool (K8s segment)
+  ansibleguy.opnsense.dhcp_range:
+    firewall: "{{ opnsense_conn }}"
+    interface: "{{ lan_interface }}"
+    start: "{{ lan_dhcp_start }}"
+    end: "{{ lan_dhcp_end }}"
+    state: present
+  tags: [dhcp]
+
+- name: DHCP — OPT1 pool (SIEM segment)
+  ansibleguy.opnsense.dhcp_range:
+    firewall: "{{ opnsense_conn }}"
+    interface: "{{ opt1_interface }}"
+    start: "{{ siem_dhcp_start }}"
+    end: "{{ siem_dhcp_end }}"
+    state: present
+  tags: [dhcp]
+
+# Static DHCP reservations for infrastructure VMs (K8s nodes)
+- name: DHCP — Static reservation: Pi-hole
+  ansibleguy.opnsense.dhcp_reservation:
+    firewall: "{{ opnsense_conn }}"
+    interface: "{{ lan_interface }}"
+    ip: "{{ pihole_ip }}"
+    mac: ""  # fill in actual MAC after first boot
+    hostname: "pihole"
+    description: "Pi-hole DNS sinkhole"
+    state: present
+  tags: [dhcp]
+  when: false  # disabled until MACs are known — set to true after first boot

@@ -1,8 +1,8 @@
 ---
 network_interface: ens18       # vmbr-mgmt — primary, static 10.10.99.30
 breakglass_interface: ens19   # vmbr0 (nic1) — DHCP, break-glass only
-gateway: "10.10.99.1"
-dns_server: "10.10.10.1"   # OPNsense on vmbr1
+gateway: "10.10.99.1"      # OPNsense OPT2 (vtnet3) — vmbr-mgmt interface
+dns_server: "10.10.10.1"   # OPNsense Unbound on LAN (vmbr1)
 
 # Packages installed on the bastion as Ansible control node
 bastion_packages:

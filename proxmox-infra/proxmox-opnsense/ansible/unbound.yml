@@ -1,0 +1,6 @@
+---
+- name: OPNsense — Configure Unbound DNS + DNS-over-TLS
+  hosts: opnsense
+  gather_facts: false
+  roles:
+    - unbound

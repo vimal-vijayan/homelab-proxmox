@@ -1,0 +1,28 @@
+---
+# OPNsense full baseline configuration
+# Run order matters — aliases must exist before firewall rules reference them.
+# Usage:
+#   ansible-playbook -i inventory.yml site.yml            # apply all
+#   ansible-playbook -i inventory.yml site.yml --check    # dry-run
+#   ansible-playbook -i inventory.yml site.yml --tags firewall  # single role
+
+- name: OPNsense — Aliases
+  import_playbook: aliases.yml
+
+- name: OPNsense — Interfaces
+  import_playbook: interfaces.yml
+
+- name: OPNsense — Firewall rules
+  import_playbook: firewall.yml
+
+- name: OPNsense — Outbound NAT
+  import_playbook: nat.yml
+
+- name: OPNsense — DHCP
+  import_playbook: dhcp.yml
+
+- name: OPNsense — Unbound DNS + DoT
+  import_playbook: unbound.yml
+
+- name: OPNsense — Suricata IDS/IPS
+  import_playbook: suricata.yml

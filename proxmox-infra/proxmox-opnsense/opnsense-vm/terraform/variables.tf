@@ -60,5 +60,5 @@ variable "storage" {
 variable "iso" {
   description = "OPNsense ISO path on Proxmox (format: <storage>:iso/<filename>)"
   type        = string
-  default     = "local:iso/OPNsense-24.7-dvd-amd64.iso"
+  default     = "local:iso/OPNsense-26.1.2-vga-amd64.iso"
 }

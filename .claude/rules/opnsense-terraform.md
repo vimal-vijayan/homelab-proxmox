@@ -13,10 +13,10 @@ proxmox-infra/proxmox-opensense/ — Terraform configs for provisioning the OPNs
 | CPU | 2 cores |
 | Memory | 6 GB |
 | Disks | 1x 16 GB (SCSI) |
-| Network Interfaces | 3x VirtIO (`vtnet0`, `vtnet1`, `vtnet2`) |
-| Bridges | `vmbr0` (WAN), `vmbr1` (LAN), `vmbr2` (OPT1) |
+| Network Interfaces | 4x VirtIO (`vtnet0`, `vtnet1`, `vtnet2`, `vtnet3`) |
+| Bridges | `vmbr0` (WAN), `vmbr1` (LAN), `vmbr2` (OPT1), `vmbr-mgmt` (OPT2) |
 
-> `vmbr-mgmt` (`10.10.99.0/24`) is **not** attached here — OPNsense does not route the management bridge.
+> `vmbr-mgmt` (`10.10.99.0/24`) is attached as OPT2 (`vtnet3`) for full traffic visibility and Suricata inspection over management traffic. Gateway: `10.10.99.1`.
 
 
 ## Commands
@@ -65,13 +65,13 @@ terraform destroy -var-file="values.tfvars"
 After `terraform apply`, OPNsense requires **manual first-boot setup** inside the Proxmox console:
 
 1. Boot from ISO and run the installer.
-2. Assign interfaces: WAN → `vtnet0`, LAN → `vtnet1`, OPT1 → `vtnet2`.
+2. Assign interfaces: WAN → `vtnet0`, LAN → `vtnet1`, OPT1 → `vtnet2`, OPT2 → `vtnet3`.
 3. Set WAN IP (DHCP from home router on `vmbr0`).
-4. Set LAN IP to `10.10.10.1/24`, OPT1 to `10.10.20.1/24`.
-5. Configure DHCP server on LAN and OPT1.
-6. Enable DNS-over-TLS (Cloudflare `1.1.1.1:853`) under Services → Unbound DNS.
-7. Install and configure Suricata IDS/IPS.
-8. Add firewall rules: block `vmbr1 ↔ vmbr2`, block `vmbr1/vmbr2 → vmbr-mgmt`, allow NAT egress.
+4. Set LAN IP to `10.10.10.1/24`, OPT1 to `10.10.20.1/24`, OPT2 to `10.10.99.1/24`.
+5. Configure DHCP server on LAN and OPT1 (MGMT uses static IPs — no DHCP on OPT2).
+6. Enable DNS-over-TLS (Cloudflare `1.1.1.1:853`) under Services → Unbound DNS. Add OPT2 to listen interfaces.
+7. Install and configure Suricata IDS/IPS — add OPT2 to monitored interfaces and home networks.
+8. Add firewall rules: block `vmbr1 ↔ vmbr2`, block `vmbr1/vmbr2 → vmbr-mgmt`, allow MGMT → all, allow NAT egress for all three segments (LAN, OPT1, OPT2).
 
 ## Lifecycle Note
 

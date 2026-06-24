@@ -1,0 +1,51 @@
+---
+# OPNsense API credentials
+# Generate under: System → Access → Users → [user] → API keys
+# NEVER commit real values — set env vars before running:
+#   export OPNSENSE_API_KEY="<key>"
+#   export OPNSENSE_API_SECRET="<secret>"
+opnsense_api_key: "{{ lookup('env', 'OPNSENSE_API_KEY') }}"
+opnsense_api_secret: "{{ lookup('env', 'OPNSENSE_API_SECRET') }}"
+opnsense_host: "10.10.10.1"
+opnsense_port: 443
+opnsense_ssl_verify: false  # self-signed cert — acceptable on private network
+
+# Shared connection block — reference as `firewall: "{{ opnsense_conn }}"` in all tasks
+opnsense_conn:
+  host: "{{ opnsense_host }}"
+  port: "{{ opnsense_port }}"
+  api_key: "{{ opnsense_api_key }}"
+  api_secret: "{{ opnsense_api_secret }}"
+  ssl_verify: "{{ opnsense_ssl_verify }}"
+
+# Network topology
+wan_interface: "wan"
+lan_interface: "lan"
+opt1_interface: "opt1"   # SIEM lab (vmbr2)
+opt2_interface: "opt2"   # Management bridge (vmbr-mgmt)
+
+lan_subnet: "10.10.10.0/24"
+lan_gateway: "10.10.10.1"
+lan_dhcp_start: "10.10.10.100"
+lan_dhcp_end: "10.10.10.200"
+
+siem_subnet: "10.10.20.0/24"
+siem_gateway: "10.10.20.1"
+siem_dhcp_start: "10.10.20.100"
+siem_dhcp_end: "10.10.20.200"
+
+mgmt_subnet: "10.10.99.0/24"
+mgmt_gateway: "10.10.99.1"
+# No DHCP on MGMT — all static IPs
+
+# Key hosts
+pihole_ip: "10.10.10.2"
+k8s_control_plane_ip: "10.10.10.10"
+tailscale_ip: "10.10.99.10"
+pbs_ip: "10.10.99.20"
+bastion_ip: "10.10.99.30"
+
+# DNS
+dot_server: "1.1.1.1"
+dot_port: 853
+dot_verify_cn: "cloudflare-dns.com"
