@@ -67,6 +67,6 @@ resource "proxmox_vm_qemu" "opnsense" {
   network {
     id     = 3
     model  = "virtio"
-    bridge = "vmbr-mgmt"
+    bridge = "vmbr3"
   }
 }
